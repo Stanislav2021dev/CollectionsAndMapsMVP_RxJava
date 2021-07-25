@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="android.text.TextUtils"/>
+        <variable name="index" type="Integer" />
+        <variable name="timeResult" type="String[]" />
+        <variable name="pbStatus" type="Boolean[]" />
+        <variable name="butStatus" type="Boolean" />
+        <variable name="butTest" type="com.example.colmapsrxjavatask4.CollectionsFragment" />
+        <variable name="amountElements" type="com.example.colmapsrxjavatask4.CollectionsFragment" />
+    </data>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <TextView
+                android:text="@string/collections"
+                style="@style/textTitle" />
+
+            <EditText
+                android:id="@+id/numCol"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{amountElements.amountEl}"
+                android:hint="@string/number_elements"
+                android:inputType="number"
+                />
+
+
+            <Button
+                android:id="@+id/testCol"
+                style="@style/mButton"
+                android:enabled="@{butStatus}"
+                android:onClick="@{butTest::onTest}"
+                android:text="@string/test" />
+
+            <LinearLayout style="@style/mLaTitle">
+
+                <TextView
+                    style="@style/textTitle"
+                    android:text="@string/array_list" />
+
+                <TextView
+                    style="@style/textTitle"
+                    android:text="@string/linked_list" />
+
+                <TextView
+                    style="@style/textTitle"
+                    android:text="@string/copy_on_write_list" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/textTitle"
+                android:text="@string/filling_collections" />
+
+            <LinearLayout style="@style/mLaResult">
+
+                <ProgressBar
+                    android:id="@+id/pb1"
+                    android:visibility="@{pbStatus[0] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time1"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[0]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[0]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb9"
+                    android:visibility="@{pbStatus[8] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time9"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[8]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[8]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb17"
+                    android:visibility="@{pbStatus[16] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time17"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[16]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[16]}"
+                    style="@style/timeResult" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/textTitle"
+                android:text="@string/add_in_beginning" />
+
+            <LinearLayout style="@style/mLaResult">
+
+                <ProgressBar
+                    android:id="@+id/pb2"
+                    android:visibility="@{pbStatus[1] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time2"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[1]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[1]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb10"
+                    android:visibility="@{pbStatus[9] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time10"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[9]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[9]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb18"
+                    android:visibility="@{pbStatus[17] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time18"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[17]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[17]}"
+                    style="@style/timeResult" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/textTitle"
+                android:text="@string/add_in_middle" />
+
+            <LinearLayout style="@style/mLaResult">
+
+                <ProgressBar
+                    android:id="@+id/pb3"
+                    android:visibility="@{pbStatus[2] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time3"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[2]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[2]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb11"
+                    android:visibility="@{pbStatus[10] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time11"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[10]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[10]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb19"
+                    android:visibility="@{pbStatus[18] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time19"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[18]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[18]}"
+                    style="@style/timeResult" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/textTitle"
+                android:text="@string/add_in_end" />
+
+            <LinearLayout style="@style/mLaResult">
+
+                <ProgressBar
+                    android:id="@+id/pb4"
+                    android:visibility="@{pbStatus[3] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time4"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[3]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[3]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb12"
+                    android:visibility="@{pbStatus[11] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time12"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[11]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[11]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb20"
+                    android:visibility="@{pbStatus[19] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time20"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[19]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[19]}"
+                    style="@style/timeResult" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/textTitle"
+                android:text="@string/search" />
+
+            <LinearLayout style="@style/mLaResult">
+
+                <ProgressBar
+                    android:id="@+id/pb5"
+                    android:visibility="@{pbStatus[4] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time5"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[4]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[4]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb13"
+                    android:visibility="@{pbStatus[12] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time13"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[12]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[12]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb21"
+                    android:visibility="@{pbStatus[20] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time21"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[20]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[20]}"
+                    style="@style/timeResult" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/textTitle"
+                android:text="@string/remove_in_the_beginning" />
+
+            <LinearLayout style="@style/mLaResult">
+
+                <ProgressBar
+                    android:id="@+id/pb6"
+                    android:visibility="@{pbStatus[5] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time6"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[5]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[5]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb14"
+                    android:visibility="@{pbStatus[13] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time14"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[13]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[13]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb22"
+                    android:visibility="@{pbStatus[21] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time22"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[21]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[21]}"
+                    style="@style/timeResult" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/textTitle"
+                android:text="@string/remove_in_the_middle" />
+
+            <LinearLayout style="@style/mLaResult">
+
+                <ProgressBar
+                    android:id="@+id/pb7"
+                    android:visibility="@{pbStatus[6] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time7"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[6]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[6]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb15"
+                    android:visibility="@{pbStatus[14] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time15"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[14]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[14]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb23"
+                    android:visibility="@{pbStatus[22] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time23"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[22]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[22]}"
+                    style="@style/timeResult" />
+            </LinearLayout>
+
+            <TextView
+                style="@style/textTitle"
+                android:text="@string/remove_in_the_end" />
+
+            <LinearLayout style="@style/mLaResult">
+
+                <ProgressBar
+                    android:id="@+id/pb8"
+                    android:visibility="@{pbStatus[7] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time8"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[7]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[7]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb16"
+                    android:visibility="@{pbStatus[15] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time16"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[15]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[15]}"
+                    style="@style/timeResult" />
+
+                <ProgressBar
+                    android:id="@+id/pb24"
+                    android:visibility="@{pbStatus[23] ? View.VISIBLE : View.GONE }"
+                    style="@style/myPb" />
+
+                <TextView
+                    android:id="@+id/time24"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[23]) ? View.GONE : View.VISIBLE}"
+                    android:text="@{timeResult[23]}"
+                    style="@style/timeResult" />
+            </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+</layout>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <TextView
+            style="@style/textTitle"
+            android:text="@string/maps"/>
+
+        <EditText
+            android:id="@+id/numMaps"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="@string/number_elements"
+            />
+
+        <Button
+            android:id="@+id/testMap"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/test" />
+
+        <LinearLayout
+            style="@style/mLaTitle">
+            <TextView
+                style="@style/textTitle"
+                android:text="@string/hash_map"/>
+            <TextView
+                style="@style/textTitle"
+                android:text="@string/tree_map"/>
+        </LinearLayout>
+        <TextView
+            style="@style/textTitle"
+            android:text="@string/filling_maps"/>
+        <LinearLayout
+            style="@style/mLaResult">
+            <ProgressBar
+                android:id="@+id/pb1"
+                style="@style/myPb" />
+            <TextView
+                android:id="@+id/time1"
+                style="@style/timeResult" />
+            <ProgressBar
+                android:id="@+id/pb5"
+                style="@style/myPb" />
+            <TextView
+                android:id="@+id/time5"
+                style="@style/timeResult" />
+        </LinearLayout>
+        <TextView
+            style="@style/textTitle"
+            android:text="@string/add_element"/>
+        <LinearLayout
+            style="@style/mLaResult">
+            <ProgressBar
+                android:id="@+id/pb2"
+                style="@style/myPb" />
+            <TextView
+                android:id="@+id/time2"
+                style="@style/timeResult" />
+            <ProgressBar
+                android:id="@+id/pb6"
+                style="@style/myPb" />
+            <TextView
+                android:id="@+id/time6"
+                style="@style/timeResult"/>
+        </LinearLayout>
+        <TextView
+            style="@style/textTitle"
+            android:text="@string/search_element"/>
+        <LinearLayout
+            style="@style/mLaResult">
+            <ProgressBar
+                android:id="@+id/pb3"
+                style="@style/myPb" />
+            <TextView
+                android:id="@+id/time3"
+                style="@style/timeResult"/>
+            <ProgressBar
+                android:id="@+id/pb7"
+                style="@style/myPb" />
+            <TextView
+                android:id="@+id/time7"
+                style="@style/timeResult" />
+        </LinearLayout>
+        <TextView
+            style="@style/textTitle"
+            android:text="@string/remove_element"
+            />
+        <LinearLayout
+            style="@style/mLaResult">
+            <ProgressBar
+                android:id="@+id/pb4"
+                style="@style/myPb" />
+            <TextView
+                android:id="@+id/time4"
+                style="@style/timeResult"/>
+            <ProgressBar
+                android:id="@+id/pb8"
+                style="@style/myPb" />
+            <TextView
+                android:id="@+id/time8"
+                style="@style/timeResult" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

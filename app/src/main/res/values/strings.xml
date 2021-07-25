@@ -1,0 +1,27 @@
+<resources>
+    <string name="app_name">ColMapsRxJavaTask4</string>
+    <string name="maps">Maps</string>
+    <string name="number_elements">Number elements</string>
+    <string name="test">Test</string>
+    <string name="hash_map">Hash Map</string>
+    <string name="tree_map">Tree Map</string>
+    <string name="filling_maps">Filling maps</string>
+    <string name="add_element">Add element</string>
+    <string name="search_element">Search element</string>
+    <string name="remove_element">Remove element</string>
+    <string name="collections">Collections</string>
+    <string name="array_list">Array list</string>
+    <string name="linked_list">Linked list</string>
+    <string name="copy_on_write_list">Copy on write list</string>
+    <string name="filling_collections">Filling collections</string>
+    <string name="add_in_beginning">Add in beginning</string>
+    <string name="add_in_middle">Add in middle</string>
+    <string name="add_in_end">Add in end</string>
+    <string name="search">Search</string>
+    <string name="remove_in_the_beginning">Remove in the beginning</string>
+    <string name="remove_in_the_middle">Remove in the middle</string>
+    <string name="remove_in_the_end">Remove in the end</string>
+    <string name="warning">Enter the value!</string>
+    <string name="ms"> <b> ms</b></string>
+    <string name="empty" />
+</resources>
