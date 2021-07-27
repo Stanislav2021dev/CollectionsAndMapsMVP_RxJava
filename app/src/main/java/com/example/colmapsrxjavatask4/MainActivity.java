@@ -22,7 +22,7 @@ public class MainActivity extends AppCompatActivity {
         pager.setAdapter(pageAdapter);
     }
 
-    public class MyAdapter extends FragmentStateAdapter {
+    public static class MyAdapter extends FragmentStateAdapter {
         public MyAdapter(FragmentActivity fragmentActivity) {
             super(fragmentActivity);
         }

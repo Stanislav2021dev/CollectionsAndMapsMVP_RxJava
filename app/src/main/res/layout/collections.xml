@@ -32,9 +32,10 @@
                 android:id="@+id/numCol"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@{amountElements.amountEl}"
+                android:text="@={amountElements.amountEl}"
                 android:hint="@string/number_elements"
                 android:inputType="number"
+                android:saveEnabled="true"
                 />
 
 

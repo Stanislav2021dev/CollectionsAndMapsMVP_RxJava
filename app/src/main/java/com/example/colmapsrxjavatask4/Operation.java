@@ -1,0 +1,42 @@
+package com.example.colmapsrxjavatask4;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+
+public enum Operation {
+    FILLING_ARRAYLIST(0),
+    ADD_IN_BEG_ARRAYLIST(1),
+    ADD_IN_MID_ARRAYLIST(2),
+    ADD_IN_END_ARRAYLIST(3),
+    SEARCH_IN_ARRAYLIST(4),
+    REMOVE_IN_BEG_ARRAYLIST(5),
+    REMOVE_IN_MID_ARRAYLIST(6),
+    REMOVE_IN_END_ARRAYLIST(7),
+    FILLING_LINKEDLIST(8),
+    ADD_IN_BEG_LINKEDLIST(9),
+    ADD_IN_MID_LINKEDLIST(10),
+    ADD_IN_END_LINKEDLIST(11),
+    SEARCH_IN_LINKEDLIST(12),
+    REMOVE_IN_BEG_LINKEDLIST(13),
+    REMOVE_IN_MID_LINKEDLIST(14),
+    REMOVE_IN_END_LINKEDLIST(15),
+    FILLING_COPY_ON_WRITE_ARRAYLIST(16),
+    ADD_IN_BEG_COPY_ON_WRITE_ARRAYLIST(17),
+    ADD_IN_MID_COPY_ON_WRITE_ARRAYLIST(18),
+    ADD_IN_END_COPY_ON_WRITE_ARRAYLIST(19),
+    SEARCH_IN_COPY_ON_WRITE_ARRAYLIST(20),
+    REMOVE_IN_BEG_COPY_ON_WRITE_ARRAYLIST(21),
+    REMOVE_IN_MID_COPY_ON_WRITE_ARRAYLIST(22),
+    REMOVE_IN_END_COPY_ON_WRITE_ARRAYLIST(23);
+
+    private int value;
+
+    Operation(int value){
+        this.value=value;
+    }
+
+    public Integer getValue(){
+        return value;
+    }
+
+}

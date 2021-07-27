@@ -1,22 +1,24 @@
 package com.example.colmapsrxjavatask4;
 
+import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.databinding.DataBindingUtil;
 import androidx.databinding.ObservableField;
 import androidx.fragment.app.Fragment;
 
 import com.example.colmapsrxjavatask4.databinding.CollectionsBinding;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Random;
 import java.util.concurrent.Callable;
@@ -32,6 +34,7 @@ import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
+import io.reactivex.rxjava3.subjects.ReplaySubject;
 
 class GenerateRandomElement {
     private static final Random element = new Random();
@@ -52,6 +55,7 @@ class FillingCollections {
             new CopyOnWriteArrayList<>();
 
     private Singletone s;
+
 
     public void A_FillArrayList() {
         s = Singletone.getInstance();
@@ -82,6 +86,7 @@ class FillingCollections {
         colCopyOnWriteArrayList = new CopyOnWriteArrayList<>(copy);
 
     }
+
 }
 
 class OperationsWithArrayList {
@@ -198,16 +203,44 @@ class OperationsWithCopyOnWriteArrayList {
 
 public class CollectionsFragment extends Fragment {
 
+
     public static CollectionsBinding binding;
     public static ObservableField<String> amountEl = new ObservableField<>("");
-    public static Boolean[] pbStatus = new Boolean[24];
-    private final Integer[] indexFillingCollectionsArray = {0, 8, 16};
-    private final Integer[]
-            indexOperationsArray =
-            {1, 9, 17, 2, 10, 18, 3, 11, 19, 4, 12, 20, 5, 13, 21, 6, 14, 22, 7, 15, 23};
+
+
+    private final Integer[] indexFillingCollectionsArray = {
+                    Operation.FILLING_ARRAYLIST.getValue(),
+                    Operation.FILLING_LINKEDLIST.getValue(),
+                    Operation.FILLING_COPY_ON_WRITE_ARRAYLIST.getValue()};
+
+
+    private final Integer[] indexOperationsArray =
+           {Operation.ADD_IN_BEG_ARRAYLIST.getValue(),
+                   Operation.ADD_IN_BEG_LINKEDLIST.getValue(),
+                   Operation.ADD_IN_BEG_COPY_ON_WRITE_ARRAYLIST.getValue(),
+                   Operation.ADD_IN_MID_ARRAYLIST.getValue(),
+                   Operation.ADD_IN_MID_LINKEDLIST.getValue(),
+                   Operation.ADD_IN_MID_COPY_ON_WRITE_ARRAYLIST.getValue(),
+                   Operation.ADD_IN_END_ARRAYLIST.getValue(),
+                   Operation.ADD_IN_END_LINKEDLIST.getValue(),
+                   Operation.ADD_IN_END_COPY_ON_WRITE_ARRAYLIST.getValue(),
+                   Operation.SEARCH_IN_ARRAYLIST.getValue(),
+                   Operation.SEARCH_IN_LINKEDLIST.getValue(),
+                   Operation.SEARCH_IN_COPY_ON_WRITE_ARRAYLIST.getValue(),
+                   Operation.REMOVE_IN_BEG_ARRAYLIST.getValue(),
+                   Operation.REMOVE_IN_BEG_LINKEDLIST.getValue(),
+                   Operation.REMOVE_IN_BEG_COPY_ON_WRITE_ARRAYLIST.getValue(),
+                   Operation.REMOVE_IN_MID_ARRAYLIST.getValue(),
+                   Operation.REMOVE_IN_MID_LINKEDLIST.getValue(),
+                   Operation.REMOVE_IN_MID_COPY_ON_WRITE_ARRAYLIST.getValue(),
+                   Operation.REMOVE_IN_END_ARRAYLIST.getValue(),
+                   Operation.REMOVE_IN_END_LINKEDLIST.getValue(),
+                   Operation.REMOVE_IN_END_COPY_ON_WRITE_ARRAYLIST.getValue(),
+           };
     private Singletone s;
     private int pageNumber;
     private Scheduler scheduler;
+    public  SubjectResult subjectResult;
 
     public static CollectionsFragment newInstance(int page) {
         CollectionsFragment collectionsFragment = new CollectionsFragment();
@@ -220,23 +253,24 @@ public class CollectionsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setRetainInstance(true);
         Log.v("MyApp", "on create");
         pageNumber = getArguments() != null ? getArguments().getInt("num") : 1;
     }
 
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        binding = DataBindingUtil.inflate(inflater, R.layout.collections, container, false);
+    public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+
+       binding = CollectionsBinding.inflate(inflater, container, false);
+
         View view = binding.getRoot();
         s = Singletone.getInstance();
-
         CollectionsFragment butTest = new CollectionsFragment();
         binding.setButTest(butTest);
 
         if (!(savedInstanceState == null)) {
             binding.setTimeResult(s.timeResult);
+            System.out.println(Arrays.asList(s.timeResult));
         }
         binding.setButStatus(s.butStatus);
         return view;
@@ -247,70 +281,113 @@ public class CollectionsFragment extends Fragment {
         super.onDestroyView();
 
     }
-
     public void onTest(View view) {
 
         s = Singletone.getInstance();
         CollectionsFragment amountElements = new CollectionsFragment();
+        if (String.valueOf(binding.numCol.getText()).isEmpty()) {
+            binding.numCol.setHint(R.string.warning);
+            return;
+        }
         s.numElementsCollection = Integer.parseInt(String.valueOf(binding.numCol.getText()));
         binding.setAmountElements(amountElements);
         Log.v("MyApp", "amount elements=" + (s.numElementsCollection));
 
-
         int numberOfThreads = Runtime.getRuntime().availableProcessors() - 1;
         ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
         scheduler = Schedulers.from(executor);
-        ObservableTransformer<Integer, Integer[]> transformer = integers -> integers
+
+        subjectResult= new SubjectResult();
+        subjectResult.subjectTime = ReplaySubject.create();
+        subjectResult.subjectStatus = ReplaySubject.create();
+        subjectResult.subjectTime.subscribe(timeResults());
+        subjectResult.subjectStatus.subscribe(pbStatus());
+
+        ObservableTransformer<Integer, Integer> transformer = integers -> integers
                 .flatMap(integer -> Observable.just(integer)
                         .subscribeOn(scheduler)
-                        .flatMap(integer1 -> Observable.fromCallable(new MyCallableTask(integer)))
+                        .flatMap(integer1 -> Observable
+                                .fromCallable(new MyCallableTask(integer,subjectResult.subjectTime,subjectResult.subjectStatus)))
+
                 )
                 .observeOn(AndroidSchedulers.mainThread());
 
-        Observable<Integer[]>  fillingCollections = Observable.fromArray(indexFillingCollectionsArray)
+        Observable<Integer>  fillingCollections = Observable.fromArray(indexFillingCollectionsArray)
                 .compose(transformer);
 
-        Observable<Integer[]> operationsWithCollections = Observable.fromArray(indexOperationsArray)
+        Observable<Integer> operationsWithCollections = Observable.fromArray(indexOperationsArray)
                 .compose(transformer);
 
-        Observable<Integer[]> observable = Observable.concat(fillingCollections, operationsWithCollections);
+        Observable<Integer> observable = Observable.concat(fillingCollections, operationsWithCollections);
 
-        observable.subscribe(new Observer<Integer[]>() {
-            @Override
-            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-
-                binding.setButStatus(s.butStatus = false);
-                s.timeResult = new String[24];
-                binding.setTimeResult(s.timeResult);
-            }
-
-            @Override
-            public void onNext(Integer @io.reactivex.rxjava3.annotations.NonNull [] result) {
-                s.timeResult[result[0]] = String.valueOf(result[1]);
-                binding.setTimeResult(s.timeResult);
-                binding.setIndex(result[0]);
-                pbStatus[result[0]] = false;
-                binding.setPbStatus(pbStatus);
-            }
-
-            @Override
-            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-                Log.v("MyApp", "Error" + e);
-            }
-
-            @Override
-            public void onComplete() {
-                binding.setButStatus(s.butStatus = true);
-                executor.shutdown();
-            }
-        });
-
+        observable.subscribe();
     }
 
-    static class MyCallableTask implements Callable<Integer[]> {
+
+    public static class SubjectResult {
+        ReplaySubject<String[]> subjectTime;
+        ReplaySubject<Boolean[]> subjectStatus;
+    }
+
+        public Observer<String[]> timeResults() {
+            return new Observer<String[]>() {
+
+                @Override
+                public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                    s = Singletone.getInstance();
+                    s.timeResult = new String[24];
+                    binding.setButStatus(s.butStatus = false);
+                    binding.setTimeResult(s.timeResult);
+                }
+
+                @Override
+                public void onNext(@NotNull @io.reactivex.rxjava3.annotations.NonNull String[] strings) {
+                    Log.v("MyApp", " Onnext" + s.butStatus);
+                    binding.setTimeResult(s.timeResult);
+                }
+
+                @Override
+                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+                }
+
+                @Override
+                public void onComplete() {
+                    binding.setButStatus(s.butStatus = true);
+                    Log.v("MyApp", " OnComplelt" + s.butStatus);
+
+                }
+            };
+        }
+
+        public Observer<Boolean[]> pbStatus() {
+            return new Observer<Boolean[]>() {
+                @Override
+                public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                    s = Singletone.getInstance();
+                    s.pbStatus = new Boolean[24];
+                }
+
+                @Override
+                public void onNext(@NotNull @io.reactivex.rxjava3.annotations.NonNull Boolean[] booleans) {
+                    binding.setPbStatus(s.pbStatus);
+                }
+
+                @Override
+                public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+
+                }
+
+                @Override
+                public void onComplete() {
+                }
+            };
+        }
+
+
+
+    static class  MyCallableTask implements Callable<Integer> {
 
         private final int index;
-        private final Integer[] results = new Integer[2];
         FillingCollections fillingCollections = new FillingCollections();
         OperationsWithArrayList operationsWithArrayList = new OperationsWithArrayList();
         OperationsWithLinkedList operationsWithLinkedList = new OperationsWithLinkedList();
@@ -323,20 +400,23 @@ public class CollectionsFragment extends Fragment {
         private int it;
         private int collections;
         private long startTime;
-        private int operationTime;
-
-        public MyCallableTask(int index) {
+        private Singletone s;
+        ReplaySubject<String[]> subjectTime;
+        ReplaySubject<Boolean[]> subjectStatus;
+        public MyCallableTask(int index,ReplaySubject<String[]> subjectTime, ReplaySubject<Boolean[]> subjectStatus) {
             this.index = index;
+            this.subjectTime=subjectTime;
+            this.subjectStatus=subjectStatus;
         }
 
-        @Override
-        public Integer[] call() {
+        public Integer call() {
+            s = Singletone.getInstance();
             try {
+
+                s.pbStatus[index] = true;
+                subjectStatus.onNext(s.pbStatus);
                 collections = index / 8;
                 it = index % 8;
-                pbStatus[index] = true;
-                binding.setPbStatus(pbStatus);
-
                 if (it == 0) {
                     startTime = System.currentTimeMillis();
                     fillCol[collections].invoke(fillingCollections);
@@ -362,18 +442,22 @@ public class CollectionsFragment extends Fragment {
                             break;
                     }
                 }
-                long duration = System.currentTimeMillis() - startTime;
-                operationTime = Integer.parseInt(String.valueOf(duration));
-                results[0] = index;
-                results[1] = operationTime;
-                Log.v("MyApp", " index = " + index + "  collection = " + collections + "  it = " + it + "  time = " + +operationTime);
+                long operationTime = System.currentTimeMillis() - startTime;
+                Log.v("MyApp", " index = " + index + "  collection = " + collections + "  it = " + it + "  time = "+operationTime );
                 TimeUnit.SECONDS.sleep(1);
+                s.pbStatus[index] = false;
+                subjectStatus.onNext(s.pbStatus);
+                s.timeResult[index]=String.valueOf(operationTime);
+                subjectTime.onNext(s.timeResult);
+                if (index==23){
+                    subjectTime.onComplete();
+                }
 
             } catch (IllegalAccessException | InvocationTargetException | InterruptedException e) {
                 e.printStackTrace();
                 Log.v("MyApp", "Catch");
             }
-            return results;
+        return index;
         }
     }
 }
