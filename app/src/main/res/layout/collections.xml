@@ -9,8 +9,8 @@
         <variable name="timeResult" type="String[]" />
         <variable name="pbStatus" type="Boolean[]" />
         <variable name="butStatus" type="Boolean" />
-        <variable name="butTest" type="com.example.colmapsrxjavatask4.CollectionsFragment" />
-        <variable name="amountElements" type="com.example.colmapsrxjavatask4.CollectionsFragment" />
+        <variable name="butTest" type="com.example.colmapsrxjavatask4.view.CollectionsFragment" />
+        <variable name="amountElements" type="com.example.colmapsrxjavatask4.view.CollectionsFragment" />
     </data>
 
     <ScrollView
@@ -43,7 +43,6 @@
                 android:id="@+id/testCol"
                 style="@style/mButton"
                 android:enabled="@{butStatus}"
-                android:onClick="@{butTest::onTest}"
                 android:text="@string/test" />
 
             <LinearLayout style="@style/mLaTitle">

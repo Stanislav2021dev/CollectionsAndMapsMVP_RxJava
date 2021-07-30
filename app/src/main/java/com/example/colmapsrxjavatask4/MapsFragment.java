@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import com.example.colmapsrxjavatask4.collectionsmodel.*;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
