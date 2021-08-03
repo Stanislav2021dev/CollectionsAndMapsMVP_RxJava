@@ -20,7 +20,7 @@ public class MainActivity extends MvpAppCompatActivity {
         Log.v("MyApp", "on create activity ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        ViewPager2 pager = (ViewPager2) findViewById(R.id.viewpager);
+        ViewPager2 pager = findViewById(R.id.viewpager);
         FragmentStateAdapter pageAdapter = new MyAdapter(this);
         pager.setAdapter(pageAdapter);
     }

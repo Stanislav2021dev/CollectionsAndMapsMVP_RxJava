@@ -1,37 +1,32 @@
 package com.example.colmapsrxjavatask4.view;
 
 
-import com.example.colmapsrxjavatask4.R;
-import com.example.colmapsrxjavatask4.Singletone;
-import android.app.Application;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 
 import androidx.annotation.Nullable;
 import androidx.databinding.ObservableField;
-import androidx.fragment.app.Fragment;
+
+import com.example.colmapsrxjavatask4.R;
+import com.example.colmapsrxjavatask4.Singletone;
 import com.example.colmapsrxjavatask4.databinding.CollectionsBinding;
 import com.example.colmapsrxjavatask4.presenters.CollectionsPresenter;
 
 import org.jetbrains.annotations.NotNull;
-import java.util.Arrays;
 
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 
-public class CollectionsFragment  extends MvpAppCompatFragment implements CollectionView {
-    @InjectPresenter
-    public CollectionsPresenter   mCollectionsPresenter;
-    public CollectionsBinding binding;
+public class CollectionsFragment extends MvpAppCompatFragment implements CollectionView {
     public static ObservableField<String> amountEl = new ObservableField<>("");
-
+    @InjectPresenter
+    public CollectionsPresenter mCollectionsPresenter;
+    public CollectionsBinding binding;
     private Singletone s;
     private int pageNumber;
-    private Button button;
 
     public static CollectionsFragment newInstance(int page) {
         CollectionsFragment
@@ -55,7 +50,6 @@ public class CollectionsFragment  extends MvpAppCompatFragment implements Collec
 
         binding = CollectionsBinding.inflate(inflater, container, false);
         s = Singletone.getInstance();
-
         binding.setButStatus(true);
         binding.testCol.setOnClickListener(v -> {
             s = Singletone.getInstance();

@@ -2,7 +2,6 @@ package com.example.colmapsrxjavatask4.presenters;
 
 import android.util.Log;
 
-import com.example.colmapsrxjavatask4.Singletone;
 import com.example.colmapsrxjavatask4.collectionsmodel.FillingCollections;
 import com.example.colmapsrxjavatask4.collectionsmodel.OperationsWithArrayList;
 import com.example.colmapsrxjavatask4.collectionsmodel.OperationsWithCopyOnWriteArrayList;
@@ -11,51 +10,41 @@ import com.example.colmapsrxjavatask4.collectionsmodel.OperationsWithLinkedList;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-
 import java.util.LinkedList;
 import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.rxjava3.subjects.PublishSubject;
-import io.reactivex.rxjava3.subjects.ReplaySubject;
+import io.reactivex.rxjava3.subjects.Subject;
 
-public class MyCallableTask  implements Callable<Integer> {
+public class MyCallableTask implements Callable<Integer> {
 
     private final int index;
-    FillingCollections fillingCollections = new FillingCollections();
-    OperationsWithArrayList operationsWithArrayList = new OperationsWithArrayList();
-    OperationsWithLinkedList operationsWithLinkedList = new OperationsWithLinkedList();
-    OperationsWithCopyOnWriteArrayList operationsWithCopyOnWriteArrayList =
+    private final Subject<TimeResult> subjectTime;
+    private final Subject<PbStatus> subjectStatus;
+    private final FillingCollections fillingCollections = new FillingCollections();
+    private final OperationsWithArrayList operationsWithArrayList = new OperationsWithArrayList();
+    private final OperationsWithLinkedList operationsWithLinkedList = new OperationsWithLinkedList();
+    private final OperationsWithCopyOnWriteArrayList operationsWithCopyOnWriteArrayList =
             new OperationsWithCopyOnWriteArrayList();
-    Method[] fillCol = FillingCollections.class.getDeclaredMethods();
-    Method[] operations0 = OperationsWithArrayList.class.getDeclaredMethods();
-    Method[] operations1 = OperationsWithLinkedList.class.getDeclaredMethods();
-    Method[] operations2 = OperationsWithCopyOnWriteArrayList.class.getDeclaredMethods();
+    private final Method[] fillCol = FillingCollections.class.getDeclaredMethods();
+    private final Method[] operations0 = OperationsWithArrayList.class.getDeclaredMethods();
+    private final Method[] operations1 = OperationsWithLinkedList.class.getDeclaredMethods();
+    private final Method[] operations2 = OperationsWithCopyOnWriteArrayList.class.getDeclaredMethods();
     private int it;
     private int collections;
     private long startTime;
-    private final PublishSubject<String[]> subjectTime;
-    private final PublishSubject<Boolean[]> subjectStatus;
-    private Boolean pbStatus[];
-    private String timeResult[];
 
-    public MyCallableTask(int index, PublishSubject<String[]> subjectTime, PublishSubject<Boolean[]> subjectStatus, Boolean[] pbStatus,
-                          String[] timeResult) {
+
+    public MyCallableTask(int index, Subject<TimeResult> subjectTime, Subject<PbStatus> subjectStatus) {
         this.index = index;
-        this.subjectTime=subjectTime;
-        this.subjectStatus=subjectStatus;
-        this.pbStatus=pbStatus;
-        this.timeResult=timeResult;
+        this.subjectTime = subjectTime;
+        this.subjectStatus = subjectStatus;
     }
 
     public Integer call() {
         try {
-             synchronized (subjectStatus){
-              pbStatus[index] = true;
-              subjectStatus.onNext(pbStatus);
-            }
-
+            subjectStatus.onNext(new PbStatus(index, true));
             collections = index / 8;
             it = index % 8;
             if (it == 0) {
@@ -87,17 +76,8 @@ public class MyCallableTask  implements Callable<Integer> {
             Log.v("MyApp", " index = " + index + "  collection = " + collections + "  it = " + it + "  time = "+operationTime );
             TimeUnit.SECONDS.sleep(1);
 
-            synchronized (subjectStatus){
-                pbStatus[index] = false;
-                subjectStatus.onNext(pbStatus);
-            }
-           synchronized (subjectTime){
-               timeResult[index]=String.valueOf(operationTime);
-               subjectTime.onNext(timeResult);
-           }
-            if (index==23){
-                subjectTime.onComplete();
-            }
+            subjectStatus.onNext(new PbStatus(index, false));
+            subjectTime.onNext(new TimeResult(index, operationTime));
 
         } catch (IllegalAccessException | InvocationTargetException | InterruptedException e) {
             e.printStackTrace();
@@ -105,4 +85,30 @@ public class MyCallableTask  implements Callable<Integer> {
         }
         return index;
     }
+
+    static class PbStatus {
+        int index;
+        Boolean status;
+
+        public PbStatus(int index, Boolean status) {
+            this.index = index;
+            this.status = status;
+        }
+    }
+
+    static class TimeResult {
+        int index;
+        long operationTime;
+
+        public TimeResult(int index, long operationTime) {
+            this.index = index;
+            this.operationTime = operationTime;
+        }
+    }
 }
+
+
+
+
+
+

@@ -5,8 +5,6 @@ package com.example.colmapsrxjavatask4;
 
         public int numElementsCollection;
         public int numElementsMap;
-        //public String[] timeResult;
-
 
         public static Singletone getInstance() {
             return ourInstance;

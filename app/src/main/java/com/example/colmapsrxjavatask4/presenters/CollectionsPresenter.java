@@ -9,19 +9,27 @@ import com.example.colmapsrxjavatask4.view.CollectionView;
 
 import org.jetbrains.annotations.NotNull;
 
+import java.nio.Buffer;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
+import io.reactivex.rxjava3.annotations.NonNull;
+import io.reactivex.rxjava3.core.BackpressureStrategy;
+import io.reactivex.rxjava3.core.Flowable;
+import io.reactivex.rxjava3.core.FlowableTransformer;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableTransformer;
 import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.core.Scheduler;
+import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
 import io.reactivex.rxjava3.subjects.ReplaySubject;
+import io.reactivex.rxjava3.subjects.Subject;
 import moxy.InjectViewState;
 import moxy.MvpPresenter;
 
@@ -30,10 +38,10 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> {
 
     private Scheduler scheduler;
     public SubjectResult subjectResult;
-    private Singletone s;
-    private Boolean[] pbStatus =new Boolean[24];
-    private String[] timeResult =new String[24];
-
+    private Boolean[] pbStatusRes = new Boolean[24];
+    private String[] timeResArray =new String[24];
+    private ExecutorService executor;
+    private final CompositeDisposable disposables=new CompositeDisposable();
     private final Integer[] indexFillingCollectionsArray = {
             Operation.FILLING_ARRAYLIST.getValue(),
             Operation.FILLING_LINKEDLIST.getValue(),
@@ -60,101 +68,97 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> {
                     Operation.REMOVE_IN_MID_COPY_ON_WRITE_ARRAYLIST.getValue(),
                     Operation.REMOVE_IN_END_ARRAYLIST.getValue(),
                     Operation.REMOVE_IN_END_LINKEDLIST.getValue(),
-                    Operation.REMOVE_IN_END_COPY_ON_WRITE_ARRAYLIST.getValue(),
-            };
-
-
+                    Operation.REMOVE_IN_END_COPY_ON_WRITE_ARRAYLIST.getValue()};
 
     public void start(){
 
         int numberOfThreads = Runtime.getRuntime().availableProcessors() - 1;
-        ExecutorService executor = Executors.newFixedThreadPool(numberOfThreads);
+        executor = Executors.newFixedThreadPool(numberOfThreads);
         scheduler = Schedulers.from(executor);
 
         subjectResult= new CollectionsPresenter.SubjectResult();
-        subjectResult.subjectTime = PublishSubject.create();
-        subjectResult.subjectStatus = PublishSubject.create();
-        subjectResult.subjectTime.subscribe(timeResults());
-        subjectResult.subjectStatus.subscribe(pbStatus());
-
-
+        subjectResult.subjectTime = PublishSubject.<MyCallableTask.TimeResult>create().toSerialized();
+        subjectResult.subjectStatus = PublishSubject.<MyCallableTask.PbStatus>create().toSerialized();
+        subjectResult.subjectTime.observeOn(AndroidSchedulers.mainThread()).subscribe(timeResults());
+        subjectResult.subjectStatus.observeOn(AndroidSchedulers.mainThread()).subscribe(pbStatus());
 
         ObservableTransformer<Integer, Integer> transformer = integers -> integers
                                 .flatMap(integer1 -> Observable
                                 .fromCallable(new MyCallableTask(integer1,subjectResult.subjectTime,
-                                        subjectResult.subjectStatus,pbStatus,timeResult))
-                                .subscribeOn(scheduler)
-                ).observeOn(AndroidSchedulers.mainThread());
+                                        subjectResult.subjectStatus))
+                                        .subscribeOn(scheduler)
+                                .doOnSubscribe(disposables::add));
 
-        Observable<Integer>  fillingCollections = Observable.fromArray(indexFillingCollectionsArray)
+        Observable<Integer> fillingCollections = Observable.fromArray(indexFillingCollectionsArray)
                 .compose(transformer);
 
         Observable<Integer> operationsWithCollections = Observable.fromArray(indexOperationsArray)
                 .compose(transformer);
 
         Observable<Integer> observable = Observable.concat(fillingCollections, operationsWithCollections);
-
         observable.subscribe();
     }
 
-    public Observer<String[]> timeResults() {
-        return new Observer<String[]>() {
-
+    public Observer<MyCallableTask.TimeResult> timeResults() {
+        return new Observer<MyCallableTask.TimeResult>() {
             @Override
             public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-                s = Singletone.getInstance();
-                timeResult=new String[24];
+                timeResArray=new String[24];
                 getViewState().showButStatus(false);
-                getViewState().showTimeResult(timeResult);
-
+                getViewState().showTimeResult(timeResArray);
             }
 
             @Override
-            public void onNext(@NotNull @io.reactivex.rxjava3.annotations.NonNull String[] strings) {
-                getViewState().showTimeResult(timeResult);
-
+            public void onNext(MyCallableTask.@NonNull TimeResult timeResult) {
+                timeResArray[timeResult.index]=String.valueOf(timeResult.operationTime);
+                getViewState().showTimeResult(timeResArray);
+                if (!Arrays.asList(timeResArray).contains(null)){
+                    subjectResult.subjectTime.onComplete();
+                }
             }
-
             @Override
             public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
             }
 
             @Override
             public void onComplete() {
-
                 getViewState().showButStatus(true);
-
             }
         };
     }
 
-    public Observer<Boolean[]> pbStatus() {
-        return new Observer<Boolean[]>() {
+    public Observer<MyCallableTask.PbStatus> pbStatus() {
+        return new Observer<MyCallableTask.PbStatus>() {
             @Override
             public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-                s = Singletone.getInstance();
-
+                pbStatusRes= new Boolean[24];
             }
 
             @Override
-            public void onNext(@NotNull @io.reactivex.rxjava3.annotations.NonNull Boolean[] booleans) {
-                getViewState().showPbStatus(booleans);
+            public void onNext(MyCallableTask.@NonNull PbStatus pbStatus) {
+                pbStatusRes[pbStatus.index]=pbStatus.status;
+                getViewState().showPbStatus(pbStatusRes);
             }
-
             @Override
             public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-
             }
-
             @Override
             public void onComplete() {
             }
         };
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+
+        executor.shutdown();
+        disposables.clear();
+
     }
 
     public static class SubjectResult {
-        PublishSubject<String[]> subjectTime;
-        PublishSubject<Boolean[]> subjectStatus;
+        Subject<MyCallableTask.TimeResult> subjectTime;
+        Subject<MyCallableTask.PbStatus> subjectStatus;
     }
 }
-
