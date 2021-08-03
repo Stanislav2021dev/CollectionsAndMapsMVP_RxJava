@@ -1,25 +1,14 @@
 package com.example.colmapsrxjavatask4.presenters;
 
-import android.util.Log;
-
-import com.example.colmapsrxjavatask4.Operation;
-import com.example.colmapsrxjavatask4.Singletone;
 import com.example.colmapsrxjavatask4.view.CollectionView;
 
 
-import org.jetbrains.annotations.NotNull;
-
-import java.nio.Buffer;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
-import io.reactivex.rxjava3.core.BackpressureStrategy;
-import io.reactivex.rxjava3.core.Flowable;
-import io.reactivex.rxjava3.core.FlowableTransformer;
 import io.reactivex.rxjava3.core.Observable;
 import io.reactivex.rxjava3.core.ObservableTransformer;
 import io.reactivex.rxjava3.core.Observer;
@@ -28,7 +17,6 @@ import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.PublishSubject;
-import io.reactivex.rxjava3.subjects.ReplaySubject;
 import io.reactivex.rxjava3.subjects.Subject;
 import moxy.InjectViewState;
 import moxy.MvpPresenter;
@@ -38,55 +26,59 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> {
 
     private Scheduler scheduler;
     public SubjectResult subjectResult;
-    private Boolean[] pbStatusRes = new Boolean[24];
+    private Boolean[] pbStatusResArray = new Boolean[24];
     private String[] timeResArray =new String[24];
     private ExecutorService executor;
     private final CompositeDisposable disposables=new CompositeDisposable();
-    private final Integer[] indexFillingCollectionsArray = {
-            Operation.FILLING_ARRAYLIST.getValue(),
-            Operation.FILLING_LINKEDLIST.getValue(),
-            Operation.FILLING_COPY_ON_WRITE_ARRAYLIST.getValue()};
+    private final Integer[] indexFillingCollectionsArray =new Integer[3];
+    private final Integer[] indexOperationsArray=new Integer[21];
 
-    private final Integer[] indexOperationsArray =
-            {Operation.ADD_IN_BEG_ARRAYLIST.getValue(),
-                    Operation.ADD_IN_BEG_LINKEDLIST.getValue(),
-                    Operation.ADD_IN_BEG_COPY_ON_WRITE_ARRAYLIST.getValue(),
-                    Operation.ADD_IN_MID_ARRAYLIST.getValue(),
-                    Operation.ADD_IN_MID_LINKEDLIST.getValue(),
-                    Operation.ADD_IN_MID_COPY_ON_WRITE_ARRAYLIST.getValue(),
-                    Operation.ADD_IN_END_ARRAYLIST.getValue(),
-                    Operation.ADD_IN_END_LINKEDLIST.getValue(),
-                    Operation.ADD_IN_END_COPY_ON_WRITE_ARRAYLIST.getValue(),
-                    Operation.SEARCH_IN_ARRAYLIST.getValue(),
-                    Operation.SEARCH_IN_LINKEDLIST.getValue(),
-                    Operation.SEARCH_IN_COPY_ON_WRITE_ARRAYLIST.getValue(),
-                    Operation.REMOVE_IN_BEG_ARRAYLIST.getValue(),
-                    Operation.REMOVE_IN_BEG_LINKEDLIST.getValue(),
-                    Operation.REMOVE_IN_BEG_COPY_ON_WRITE_ARRAYLIST.getValue(),
-                    Operation.REMOVE_IN_MID_ARRAYLIST.getValue(),
-                    Operation.REMOVE_IN_MID_LINKEDLIST.getValue(),
-                    Operation.REMOVE_IN_MID_COPY_ON_WRITE_ARRAYLIST.getValue(),
-                    Operation.REMOVE_IN_END_ARRAYLIST.getValue(),
-                    Operation.REMOVE_IN_END_LINKEDLIST.getValue(),
-                    Operation.REMOVE_IN_END_COPY_ON_WRITE_ARRAYLIST.getValue()};
+    public CollectionsPresenter(){
+        fillIndexArrays();
+        createScheduler();
+    }
 
-    public void start(){
+    public void fillIndexArrays(){
+        for (int collections = 0; collections <= 2; collections++) {
+            int index =  collections * 8 ;
+            indexFillingCollectionsArray[collections]=index;
+        }
+        int count=0;
+        for (int iterationNumber = 1; iterationNumber <= 7; iterationNumber++) {
+            for (int collections = 0; collections <= 2; collections++) {
+                int index = (iterationNumber + 1) + (collections * 8) - 1;
+                indexOperationsArray[count]=index;
+                count++;
+            }
+        }
+    }
 
+    public void createScheduler(){
         int numberOfThreads = Runtime.getRuntime().availableProcessors() - 1;
         executor = Executors.newFixedThreadPool(numberOfThreads);
         scheduler = Schedulers.from(executor);
+    }
+
+    public void start(){
 
         subjectResult= new CollectionsPresenter.SubjectResult();
         subjectResult.subjectTime = PublishSubject.<MyCallableTask.TimeResult>create().toSerialized();
         subjectResult.subjectStatus = PublishSubject.<MyCallableTask.PbStatus>create().toSerialized();
-        subjectResult.subjectTime.observeOn(AndroidSchedulers.mainThread()).subscribe(timeResults());
-        subjectResult.subjectStatus.observeOn(AndroidSchedulers.mainThread()).subscribe(pbStatus());
+
+        subjectResult.subjectTime
+                .doOnSubscribe(disposables::add)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(timeResults());
+        subjectResult.subjectStatus
+                .doOnSubscribe(disposables::add)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(pbStatus());
 
         ObservableTransformer<Integer, Integer> transformer = integers -> integers
-                                .flatMap(integer1 -> Observable
-                                .fromCallable(new MyCallableTask(integer1,subjectResult.subjectTime,
+                                .flatMap(index -> Observable
+                                .fromCallable(new MyCallableTask(index,subjectResult.subjectTime,
                                         subjectResult.subjectStatus))
-                                        .subscribeOn(scheduler)
+                                .subscribeOn(scheduler)
                                 .doOnSubscribe(disposables::add));
 
         Observable<Integer> fillingCollections = Observable.fromArray(indexFillingCollectionsArray)
@@ -131,13 +123,13 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> {
         return new Observer<MyCallableTask.PbStatus>() {
             @Override
             public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-                pbStatusRes= new Boolean[24];
+                pbStatusResArray= new Boolean[24];
             }
 
             @Override
             public void onNext(MyCallableTask.@NonNull PbStatus pbStatus) {
-                pbStatusRes[pbStatus.index]=pbStatus.status;
-                getViewState().showPbStatus(pbStatusRes);
+                pbStatusResArray[pbStatus.index]=pbStatus.status;
+                getViewState().showPbStatus(pbStatusResArray);
             }
             @Override
             public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
@@ -151,10 +143,8 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> {
     @Override
     public void onDestroy() {
         super.onDestroy();
-
         executor.shutdown();
         disposables.clear();
-
     }
 
     public static class SubjectResult {

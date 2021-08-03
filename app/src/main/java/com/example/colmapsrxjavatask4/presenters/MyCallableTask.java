@@ -31,8 +31,6 @@ public class MyCallableTask implements Callable<Integer> {
     private final Method[] operations0 = OperationsWithArrayList.class.getDeclaredMethods();
     private final Method[] operations1 = OperationsWithLinkedList.class.getDeclaredMethods();
     private final Method[] operations2 = OperationsWithCopyOnWriteArrayList.class.getDeclaredMethods();
-    private int it;
-    private int collections;
     private long startTime;
 
 
@@ -45,9 +43,9 @@ public class MyCallableTask implements Callable<Integer> {
     public Integer call() {
         try {
             subjectStatus.onNext(new PbStatus(index, true));
-            collections = index / 8;
-            it = index % 8;
-            if (it == 0) {
+            int collections = index / 8;
+            int iteration = index % 8;
+            if (iteration == 0) {
                 startTime = System.currentTimeMillis();
                 fillCol[collections].invoke(fillingCollections);
             } else {
@@ -56,24 +54,24 @@ public class MyCallableTask implements Callable<Integer> {
                         ArrayList<Integer> copyCol0 =
                                 new ArrayList<>(FillingCollections.colArrayList);
                         startTime = System.currentTimeMillis();
-                        operations0[it - 1].invoke(operationsWithArrayList, copyCol0);
+                        operations0[iteration - 1].invoke(operationsWithArrayList, copyCol0);
                         break;
                     case (1):
                         LinkedList<Integer> copyCol1 =
                                 new LinkedList<>(FillingCollections.colLinkedList);
                         startTime = System.currentTimeMillis();
-                        operations1[it - 1].invoke(operationsWithLinkedList, copyCol1);
+                        operations1[iteration - 1].invoke(operationsWithLinkedList, copyCol1);
                         break;
                     case (2):
                         CopyOnWriteArrayList<Integer> copyCol2 =
                                 new CopyOnWriteArrayList<>(FillingCollections.colCopyOnWriteArrayList);
                         startTime = System.currentTimeMillis();
-                        operations2[it - 1].invoke(operationsWithCopyOnWriteArrayList, copyCol2);
+                        operations2[iteration - 1].invoke(operationsWithCopyOnWriteArrayList, copyCol2);
                         break;
                 }
             }
             long operationTime = System.currentTimeMillis() - startTime;
-            Log.v("MyApp", " index = " + index + "  collection = " + collections + "  it = " + it + "  time = "+operationTime );
+            Log.v("MyApp", " index = " + index + "  collection = " + collections + "  it = " + iteration + "  time = "+operationTime );
             TimeUnit.SECONDS.sleep(1);
 
             subjectStatus.onNext(new PbStatus(index, false));

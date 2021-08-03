@@ -24,7 +24,7 @@ public class CollectionsFragment extends MvpAppCompatFragment implements Collect
     public static ObservableField<String> amountEl = new ObservableField<>("");
     @InjectPresenter
     public CollectionsPresenter mCollectionsPresenter;
-    public CollectionsBinding binding;
+    private CollectionsBinding binding;
     private Singletone s;
     private int pageNumber;
 
