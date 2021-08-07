@@ -6,6 +6,7 @@ import com.example.colmapsrxjavatask4.collectionsmodel.FillingCollections;
 import com.example.colmapsrxjavatask4.collectionsmodel.OperationsWithArrayList;
 import com.example.colmapsrxjavatask4.collectionsmodel.OperationsWithCopyOnWriteArrayList;
 import com.example.colmapsrxjavatask4.collectionsmodel.OperationsWithLinkedList;
+import com.example.colmapsrxjavatask4.di.InjectOperationsInterface;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -15,18 +16,23 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.TimeUnit;
 
+import javax.inject.Inject;
+import javax.inject.Singleton;
+
+import dagger.hilt.EntryPoint;
+import dagger.hilt.EntryPoints;
+import dagger.hilt.InstallIn;
+import dagger.hilt.android.qualifiers.ApplicationContext;
+import dagger.hilt.components.SingletonComponent;
+import dagger.hilt.internal.GeneratedComponent;
+import hilt_aggregated_deps._dagger_hilt_android_internal_modules_ApplicationContextModule;
 import io.reactivex.rxjava3.subjects.Subject;
 
-public class MyCallableTask implements Callable<Integer> {
+public class CallableTask implements Callable<Integer>, InjectOperationsInterface, GeneratedComponent {
 
-    private final int index;
+    public   Integer index;
     private final Subject<TimeResult> subjectTime;
     private final Subject<PbStatus> subjectStatus;
-    private final FillingCollections fillingCollections = new FillingCollections();
-    private final OperationsWithArrayList operationsWithArrayList = new OperationsWithArrayList();
-    private final OperationsWithLinkedList operationsWithLinkedList = new OperationsWithLinkedList();
-    private final OperationsWithCopyOnWriteArrayList operationsWithCopyOnWriteArrayList =
-            new OperationsWithCopyOnWriteArrayList();
     private final Method[] fillCol = FillingCollections.class.getDeclaredMethods();
     private final Method[] operations0 = OperationsWithArrayList.class.getDeclaredMethods();
     private final Method[] operations1 = OperationsWithLinkedList.class.getDeclaredMethods();
@@ -34,11 +40,17 @@ public class MyCallableTask implements Callable<Integer> {
     private long startTime;
 
 
-    public MyCallableTask(int index, Subject<TimeResult> subjectTime, Subject<PbStatus> subjectStatus) {
+    public CallableTask(Integer index, Subject<TimeResult> subjectTime, Subject<PbStatus> subjectStatus) {
         this.index = index;
         this.subjectTime = subjectTime;
         this.subjectStatus = subjectStatus;
     }
+
+    InjectOperationsInterface mInterface= EntryPoints.get(this,InjectOperationsInterface.class);
+    FillingCollections fillingCollections=mInterface.getFillingCollection();
+    OperationsWithArrayList operationsWithArrayList=mInterface.getOperationsWithArrayList();
+    OperationsWithLinkedList operationsWithLinkedList=mInterface.getOperationsWithLinkedList();
+    OperationsWithCopyOnWriteArrayList operationsWithCopyOnWriteArrayList =mInterface.getOperationsWithCopyOnWriteArrayList();
 
     public Integer call() {
         try {
@@ -51,6 +63,7 @@ public class MyCallableTask implements Callable<Integer> {
             } else {
                 switch (collections) {
                     case (0):
+
                         ArrayList<Integer> copyCol0 =
                                 new ArrayList<>(FillingCollections.colArrayList);
                         startTime = System.currentTimeMillis();
@@ -84,20 +97,18 @@ public class MyCallableTask implements Callable<Integer> {
         return index;
     }
 
-    static class PbStatus {
+    public static class PbStatus {
         int index;
         Boolean status;
-
         public PbStatus(int index, Boolean status) {
             this.index = index;
             this.status = status;
         }
     }
 
-    static class TimeResult {
+    public static class TimeResult {
         int index;
         long operationTime;
-
         public TimeResult(int index, long operationTime) {
             this.index = index;
             this.operationTime = operationTime;

@@ -13,6 +13,7 @@ import androidx.databinding.ObservableField;
 import com.example.colmapsrxjavatask4.R;
 import com.example.colmapsrxjavatask4.Singletone;
 import com.example.colmapsrxjavatask4.databinding.CollectionsBinding;
+
 import com.example.colmapsrxjavatask4.presenters.CollectionsPresenter;
 
 import org.jetbrains.annotations.NotNull;
@@ -86,4 +87,5 @@ public class CollectionsFragment extends MvpAppCompatFragment implements Collect
     public void showPbStatus(Boolean[] pbStatus) {
         binding.setPbStatus(pbStatus);
     }
+
 }

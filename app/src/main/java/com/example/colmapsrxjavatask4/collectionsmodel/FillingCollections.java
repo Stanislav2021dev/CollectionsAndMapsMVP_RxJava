@@ -6,7 +6,12 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.concurrent.CopyOnWriteArrayList;
 
+import javax.inject.Inject;
+
+import dagger.hilt.EntryPoint;
+
 public class FillingCollections {
+
     public static ArrayList<Integer> colArrayList = new ArrayList<>();
     public static LinkedList<Integer> colLinkedList = new LinkedList<>();
     public static CopyOnWriteArrayList<Integer> colCopyOnWriteArrayList =
@@ -14,14 +19,12 @@ public class FillingCollections {
 
     private Singletone s;
 
-
     public void A_FillArrayList() {
         s = Singletone.getInstance();
         colArrayList.clear();
         for (int i = 0; i < s.numElementsCollection; i++) {
             colArrayList.add(GenerateRandomElement.randomInt());
         }
-
     }
 
     public void B_FillLinkedList() {

@@ -1,12 +1,12 @@
 package com.example.colmapsrxjavatask4.presenters;
 
+import com.example.colmapsrxjavatask4.di.InjectSubjectInterface;
 import com.example.colmapsrxjavatask4.view.CollectionView;
-
-
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-
+import dagger.hilt.EntryPoints;
+import dagger.hilt.internal.GeneratedComponent;
 import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers;
 import io.reactivex.rxjava3.annotations.NonNull;
 import io.reactivex.rxjava3.core.Observable;
@@ -16,16 +16,15 @@ import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
 import io.reactivex.rxjava3.schedulers.Schedulers;
-import io.reactivex.rxjava3.subjects.PublishSubject;
 import io.reactivex.rxjava3.subjects.Subject;
-import moxy.InjectViewState;
 import moxy.MvpPresenter;
 
-@InjectViewState
-public class CollectionsPresenter extends MvpPresenter<CollectionView> {
+
+public class CollectionsPresenter extends MvpPresenter<CollectionView> implements InjectSubjectInterface, GeneratedComponent {
 
     private Scheduler scheduler;
-    public SubjectResult subjectResult;
+    private Subject<CallableTask.TimeResult> subjectTime;
+    private Subject<CallableTask.PbStatus> subjectPbStatus;
     private Boolean[] pbStatusResArray = new Boolean[24];
     private String[] timeResArray =new String[24];
     private ExecutorService executor;
@@ -61,25 +60,23 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> {
 
     public void start(){
 
-        subjectResult= new CollectionsPresenter.SubjectResult();
-        subjectResult.subjectTime = PublishSubject.<MyCallableTask.TimeResult>create().toSerialized();
-        subjectResult.subjectStatus = PublishSubject.<MyCallableTask.PbStatus>create().toSerialized();
-
-        subjectResult.subjectTime
+        InjectSubjectInterface mInterface= EntryPoints.get(this, InjectSubjectInterface.class);
+        subjectTime = mInterface.getSubjectTime();
+        subjectPbStatus=mInterface.getSubjectPbStatus();
+        subjectTime
                 .doOnSubscribe(disposables::add)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(timeResults());
-        subjectResult.subjectStatus
+
+        subjectPbStatus
                 .doOnSubscribe(disposables::add)
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pbStatus());
 
         ObservableTransformer<Integer, Integer> transformer = integers -> integers
                                 .flatMap(index -> Observable
-                                .fromCallable(new MyCallableTask(index,subjectResult.subjectTime,
-                                        subjectResult.subjectStatus))
-                                .subscribeOn(scheduler)
-                                .doOnSubscribe(disposables::add));
+                                .fromCallable(new CallableTask(index,subjectTime,subjectPbStatus))
+                                .subscribeOn(scheduler));
 
         Observable<Integer> fillingCollections = Observable.fromArray(indexFillingCollectionsArray)
                 .compose(transformer);
@@ -88,11 +85,11 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> {
                 .compose(transformer);
 
         Observable<Integer> observable = Observable.concat(fillingCollections, operationsWithCollections);
-        observable.subscribe();
+        disposables.add(observable.subscribe());
     }
 
-    public Observer<MyCallableTask.TimeResult> timeResults() {
-        return new Observer<MyCallableTask.TimeResult>() {
+    public Observer<CallableTask.TimeResult> timeResults() {
+        return new Observer<CallableTask.TimeResult>() {
             @Override
             public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
                 timeResArray=new String[24];
@@ -101,11 +98,11 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> {
             }
 
             @Override
-            public void onNext(MyCallableTask.@NonNull TimeResult timeResult) {
+            public void onNext(CallableTask.@NonNull TimeResult timeResult) {
                 timeResArray[timeResult.index]=String.valueOf(timeResult.operationTime);
                 getViewState().showTimeResult(timeResArray);
                 if (!Arrays.asList(timeResArray).contains(null)){
-                    subjectResult.subjectTime.onComplete();
+                    subjectTime.onComplete();
                 }
             }
             @Override
@@ -119,15 +116,15 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> {
         };
     }
 
-    public Observer<MyCallableTask.PbStatus> pbStatus() {
-        return new Observer<MyCallableTask.PbStatus>() {
+    public Observer<CallableTask.PbStatus> pbStatus() {
+        return new Observer<CallableTask.PbStatus>() {
             @Override
             public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
                 pbStatusResArray= new Boolean[24];
             }
 
             @Override
-            public void onNext(MyCallableTask.@NonNull PbStatus pbStatus) {
+            public void onNext(CallableTask.@NonNull PbStatus pbStatus) {
                 pbStatusResArray[pbStatus.index]=pbStatus.status;
                 getViewState().showPbStatus(pbStatusResArray);
             }
@@ -145,10 +142,5 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> {
         super.onDestroy();
         executor.shutdown();
         disposables.clear();
-    }
-
-    public static class SubjectResult {
-        Subject<MyCallableTask.TimeResult> subjectTime;
-        Subject<MyCallableTask.PbStatus> subjectStatus;
     }
 }
