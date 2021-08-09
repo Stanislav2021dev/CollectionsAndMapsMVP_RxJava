@@ -12,7 +12,6 @@ import dagger.hilt.components.SingletonComponent;
 @EntryPoint
 @InstallIn(SingletonComponent.class)
 public interface InjectSubjectInterface {
-
     default Subject<CallableTask.TimeResult> getSubjectTime() {
         SubjectResult subjectResult=new SubjectResult();
        return subjectResult.subjectTime= PublishSubject.<CallableTask.TimeResult>create().toSerialized();
@@ -21,5 +20,4 @@ public interface InjectSubjectInterface {
         SubjectResult subjectResult=new SubjectResult();
         return subjectResult.subjectStatus=PublishSubject.<CallableTask.PbStatus>create().toSerialized();
     }
-
 }

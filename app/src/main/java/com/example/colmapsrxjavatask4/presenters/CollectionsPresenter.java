@@ -1,5 +1,11 @@
 package com.example.colmapsrxjavatask4.presenters;
 
+import android.util.Log;
+
+import androidx.annotation.VisibleForTesting;
+
+import com.example.colmapsrxjavatask4.di.InjectCallableTaskInterface;
+import com.example.colmapsrxjavatask4.di.InjectSchedulerInterface;
 import com.example.colmapsrxjavatask4.di.InjectSubjectInterface;
 import com.example.colmapsrxjavatask4.view.CollectionView;
 import java.util.Arrays;
@@ -15,26 +21,27 @@ import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.functions.Consumer;
 import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.Subject;
 import moxy.MvpPresenter;
 
 
-public class CollectionsPresenter extends MvpPresenter<CollectionView> implements InjectSubjectInterface, GeneratedComponent {
+public class CollectionsPresenter extends MvpPresenter<CollectionView> implements InjectSubjectInterface,
+        InjectSchedulerInterface, InjectCallableTaskInterface, GeneratedComponent {
 
     private Scheduler scheduler;
+    private ExecutorService executor;
     private Subject<CallableTask.TimeResult> subjectTime;
     private Subject<CallableTask.PbStatus> subjectPbStatus;
     private Boolean[] pbStatusResArray = new Boolean[24];
     private String[] timeResArray =new String[24];
-    private ExecutorService executor;
     private final CompositeDisposable disposables=new CompositeDisposable();
     private final Integer[] indexFillingCollectionsArray =new Integer[3];
     private final Integer[] indexOperationsArray=new Integer[21];
 
     public CollectionsPresenter(){
         fillIndexArrays();
-        createScheduler();
     }
 
     public void fillIndexArrays(){
@@ -52,13 +59,12 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
         }
     }
 
-    public void createScheduler(){
-        int numberOfThreads = Runtime.getRuntime().availableProcessors() - 1;
-        executor = Executors.newFixedThreadPool(numberOfThreads);
-        scheduler = Schedulers.from(executor);
-    }
-
     public void start(){
+
+        InjectCallableTaskInterface callableTaskInterface=EntryPoints.get(this,InjectCallableTaskInterface.class);
+        InjectSchedulerInterface schedulerInterface=EntryPoints.get(this,InjectSchedulerInterface.class);
+        executor=schedulerInterface.createExecutor();
+        scheduler=schedulerInterface.createScheduler(executor);
 
         InjectSubjectInterface mInterface= EntryPoints.get(this, InjectSubjectInterface.class);
         subjectTime = mInterface.getSubjectTime();
@@ -73,10 +79,13 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(pbStatus());
 
-        ObservableTransformer<Integer, Integer> transformer = integers -> integers
-                                .flatMap(index -> Observable
-                                .fromCallable(new CallableTask(index,subjectTime,subjectPbStatus))
-                                .subscribeOn(scheduler));
+        ObservableTransformer<Integer, Integer> transformer = integer -> integer
+                                .flatMap(index -> {
+                                            return Observable
+                                                .fromCallable(callableTaskInterface.getCallableTask(index,subjectTime,subjectPbStatus))
+                                                .subscribeOn(scheduler);
+                                        }
+                                );
 
         Observable<Integer> fillingCollections = Observable.fromArray(indexFillingCollectionsArray)
                 .compose(transformer);
@@ -87,6 +96,8 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
         Observable<Integer> observable = Observable.concat(fillingCollections, operationsWithCollections);
         disposables.add(observable.subscribe());
     }
+
+
 
     public Observer<CallableTask.TimeResult> timeResults() {
         return new Observer<CallableTask.TimeResult>() {
@@ -136,7 +147,6 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
             }
         };
     }
-
     @Override
     public void onDestroy() {
         super.onDestroy();

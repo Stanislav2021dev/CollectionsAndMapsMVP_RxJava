@@ -1,27 +1,24 @@
 package com.example.colmapsrxjavatask4.view;
 
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
 import androidx.annotation.Nullable;
 import androidx.databinding.ObservableField;
-
 import com.example.colmapsrxjavatask4.R;
 import com.example.colmapsrxjavatask4.Singletone;
 import com.example.colmapsrxjavatask4.databinding.CollectionsBinding;
-
+import com.example.colmapsrxjavatask4.di.InjectSingletoneInterface;
 import com.example.colmapsrxjavatask4.presenters.CollectionsPresenter;
-
 import org.jetbrains.annotations.NotNull;
-
+import dagger.hilt.EntryPoints;
+import dagger.hilt.internal.GeneratedComponent;
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 
-public class CollectionsFragment extends MvpAppCompatFragment implements CollectionView {
+public class CollectionsFragment extends MvpAppCompatFragment implements CollectionView, InjectSingletoneInterface, GeneratedComponent {
     public static ObservableField<String> amountEl = new ObservableField<>("");
     @InjectPresenter
     public CollectionsPresenter mCollectionsPresenter;
@@ -48,12 +45,11 @@ public class CollectionsFragment extends MvpAppCompatFragment implements Collect
     @Nullable
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
+        InjectSingletoneInterface mInterface= EntryPoints.get(this,InjectSingletoneInterface.class);
+        s=mInterface.getSingletone();
         binding = CollectionsBinding.inflate(inflater, container, false);
-        s = Singletone.getInstance();
         binding.setButStatus(true);
         binding.testCol.setOnClickListener(v -> {
-            s = Singletone.getInstance();
             CollectionsFragment amountElements = new CollectionsFragment();
             if (String.valueOf(binding.numCol.getText()).isEmpty()) {
                 binding.numCol.setHint(R.string.warning);
@@ -64,7 +60,6 @@ public class CollectionsFragment extends MvpAppCompatFragment implements Collect
             Log.v("MyApp", "amount elements=" + (s.numElementsCollection));
             mCollectionsPresenter.start();
         });
-
         return binding.getRoot();
     }
 
