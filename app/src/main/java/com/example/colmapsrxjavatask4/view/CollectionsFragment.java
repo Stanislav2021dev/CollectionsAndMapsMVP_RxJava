@@ -1,11 +1,13 @@
 package com.example.colmapsrxjavatask4.view;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.databinding.ObservableField;
 import com.example.colmapsrxjavatask4.R;
 import com.example.colmapsrxjavatask4.Singletone;
@@ -58,7 +60,8 @@ public class CollectionsFragment extends MvpAppCompatFragment implements Collect
             s.numElementsCollection = Integer.parseInt(String.valueOf(binding.numCol.getText()));
             binding.setAmountElements(amountElements);
             Log.v("MyApp", "amount elements=" + (s.numElementsCollection));
-            mCollectionsPresenter.start();
+                mCollectionsPresenter.start();
+
         });
         return binding.getRoot();
     }

@@ -73,7 +73,7 @@
 
                 <TextView
                     android:id="@+id/time1"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[0]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[0]) ? pbStatus[0]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[0]}"
                     style="@style/timeResult" />
 
@@ -84,7 +84,7 @@
 
                 <TextView
                     android:id="@+id/time9"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[8]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[8]) ? pbStatus[8]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[8]}"
                     style="@style/timeResult" />
 
@@ -95,7 +95,7 @@
 
                 <TextView
                     android:id="@+id/time17"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[16]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[16]) ? pbStatus[16]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[16]}"
                     style="@style/timeResult" />
             </LinearLayout>
@@ -113,7 +113,7 @@
 
                 <TextView
                     android:id="@+id/time2"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[1]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[1]) ? pbStatus[1]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[1]}"
                     style="@style/timeResult" />
 
@@ -124,7 +124,7 @@
 
                 <TextView
                     android:id="@+id/time10"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[9]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[9]) ? pbStatus[9]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[9]}"
                     style="@style/timeResult" />
 
@@ -135,7 +135,7 @@
 
                 <TextView
                     android:id="@+id/time18"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[17]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[17]) ? pbStatus[17]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[17]}"
                     style="@style/timeResult" />
             </LinearLayout>
@@ -153,7 +153,7 @@
 
                 <TextView
                     android:id="@+id/time3"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[2]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[2]) ? pbStatus[2]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[2]}"
                     style="@style/timeResult" />
 
@@ -164,7 +164,7 @@
 
                 <TextView
                     android:id="@+id/time11"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[10]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[10]) ? pbStatus[10]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[10]}"
                     style="@style/timeResult" />
 
@@ -175,7 +175,7 @@
 
                 <TextView
                     android:id="@+id/time19"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[18]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[18]) ? pbStatus[18]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[18]}"
                     style="@style/timeResult" />
             </LinearLayout>
@@ -193,7 +193,7 @@
 
                 <TextView
                     android:id="@+id/time4"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[3]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[3]) ? pbStatus[3]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[3]}"
                     style="@style/timeResult" />
 
@@ -204,7 +204,7 @@
 
                 <TextView
                     android:id="@+id/time12"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[11]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[11]) ? pbStatus[11]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[11]}"
                     style="@style/timeResult" />
 
@@ -215,7 +215,7 @@
 
                 <TextView
                     android:id="@+id/time20"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[19]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[19]) ? pbStatus[19]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[19]}"
                     style="@style/timeResult" />
             </LinearLayout>
@@ -233,7 +233,7 @@
 
                 <TextView
                     android:id="@+id/time5"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[4]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[4]) ? pbStatus[4]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[4]}"
                     style="@style/timeResult" />
 
@@ -244,7 +244,7 @@
 
                 <TextView
                     android:id="@+id/time13"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[12]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[12]) ? pbStatus[12]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[12]}"
                     style="@style/timeResult" />
 
@@ -255,7 +255,7 @@
 
                 <TextView
                     android:id="@+id/time21"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[20]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[20]) ? pbStatus[20]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[20]}"
                     style="@style/timeResult" />
             </LinearLayout>
@@ -273,7 +273,7 @@
 
                 <TextView
                     android:id="@+id/time6"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[5]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[5]) ? pbStatus[5]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[5]}"
                     style="@style/timeResult" />
 
@@ -284,7 +284,7 @@
 
                 <TextView
                     android:id="@+id/time14"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[13]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[13]) ? pbStatus[13]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[13]}"
                     style="@style/timeResult" />
 
@@ -295,7 +295,7 @@
 
                 <TextView
                     android:id="@+id/time22"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[21]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[21]) ? pbStatus[21]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[21]}"
                     style="@style/timeResult" />
             </LinearLayout>
@@ -313,7 +313,7 @@
 
                 <TextView
                     android:id="@+id/time7"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[6]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[6]) ? pbStatus[6]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[6]}"
                     style="@style/timeResult" />
 
@@ -324,7 +324,7 @@
 
                 <TextView
                     android:id="@+id/time15"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[14]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[14]) ? pbStatus[14]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[14]}"
                     style="@style/timeResult" />
 
@@ -335,7 +335,7 @@
 
                 <TextView
                     android:id="@+id/time23"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[22]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[22]) ? pbStatus[22]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[22]}"
                     style="@style/timeResult" />
             </LinearLayout>
@@ -353,7 +353,7 @@
 
                 <TextView
                     android:id="@+id/time8"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[7]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[7]) ? pbStatus[7]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[7]}"
                     style="@style/timeResult" />
 
@@ -364,7 +364,7 @@
 
                 <TextView
                     android:id="@+id/time16"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[15]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[15]) ? pbStatus[15]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[15]}"
                     style="@style/timeResult" />
 
@@ -375,7 +375,7 @@
 
                 <TextView
                     android:id="@+id/time24"
-                    android:visibility="@{TextUtils.isEmpty(timeResult[23]) ? View.GONE : View.VISIBLE}"
+                    android:visibility="@{TextUtils.isEmpty(timeResult[23]) ? pbStatus[23]? View.GONE : View.INVISIBLE: View.VISIBLE}"
                     android:text="@{timeResult[23]}"
                     style="@style/timeResult" />
             </LinearLayout>

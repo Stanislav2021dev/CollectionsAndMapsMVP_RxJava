@@ -1,38 +1,63 @@
 package com.example.colmapsrxjavatask4.collectionsmodel;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class OperationsWithLinkedList {
-    public void B_AddInBeginning(LinkedList<Integer> copyCol) {
-        copyCol.addFirst(GenerateRandomElement.randomInt());
+
+    public final List<Consumer<LinkedList<Integer>>> operationsWithLinkedList=new ArrayList<>();
+
+    public OperationsWithLinkedList(){
+        createListOfOperationsWithLinkedList();
     }
 
-    public void C_AddInMiddle(LinkedList<Integer> copyCol) {
-        copyCol.add(GenerateRandomElement.randomInRange(copyCol.size()), GenerateRandomElement.randomInt());
+    public Consumer<LinkedList<Integer>> addInBeginning() {
+        return input -> input.addFirst(GenerateRandomElement.randomInt());
     }
 
-    public void D_AddInEnd(LinkedList<Integer> copyCol) {
-        copyCol.addLast(GenerateRandomElement.randomInt());
+    public Consumer<LinkedList<Integer>> addInMiddle() {
+        return input -> input.add(GenerateRandomElement.randomInRange(input.size()), GenerateRandomElement.randomInt());
     }
 
-    public void E_Search(LinkedList<Integer> copyCol) {
-        Integer searchEL = GenerateRandomElement.randomInt();
-        for (Integer val : copyCol) {
-            if (searchEL.equals(val)) {
-                break;
+    public Consumer<LinkedList<Integer>> addInEnd() {
+        return input -> input.addLast(GenerateRandomElement.randomInt());
+    }
+
+    public Consumer<LinkedList<Integer>> search() {
+        return input -> {
+            Integer searchEL = GenerateRandomElement.randomInt();
+            for (Integer val : input) {
+                if (searchEL.equals(val)) {
+                    break;
+                }
             }
-        }
+        };
     }
 
-    public void F_RemoveFromBegining(LinkedList<Integer> copyCol) {
-        copyCol.removeFirst();
+    public Consumer<LinkedList<Integer>> removeFromBegining() {
+        return LinkedList::removeFirst;
     }
 
-    public void G_RemoveInMiddle(LinkedList<Integer> copyCol) {
-        copyCol.remove(GenerateRandomElement.randomInRange(copyCol.size()));
+    public Consumer<LinkedList<Integer>> removeInMiddle() {
+        return input -> input.remove(GenerateRandomElement.randomInRange(input.size()));
     }
 
-    public void H_RemoveInEnd(LinkedList<Integer> copyCol) {
-        copyCol.removeLast();
+    public Consumer<LinkedList<Integer>> removeInEnd() {
+        return LinkedList::removeLast;
+    }
+
+    private void createListOfOperationsWithLinkedList() {
+        operationsWithLinkedList.add(addInBeginning());
+        operationsWithLinkedList.add(addInMiddle());
+        operationsWithLinkedList.add(addInEnd());
+        operationsWithLinkedList.add(search());
+        operationsWithLinkedList.add(removeFromBegining());
+        operationsWithLinkedList.add(removeInMiddle());
+        operationsWithLinkedList.add(removeInEnd());
+    }
+    public List<Consumer<LinkedList<Integer>>> getOperationsWithLinkedList(){
+        return operationsWithLinkedList;
     }
 }

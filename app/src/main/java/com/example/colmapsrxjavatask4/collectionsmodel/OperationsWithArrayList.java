@@ -1,38 +1,60 @@
 package com.example.colmapsrxjavatask4.collectionsmodel;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.function.Consumer;
 
 public class OperationsWithArrayList {
-    public void B_AddInBeginning(ArrayList<Integer> copyCol) {
-        copyCol.add(0, GenerateRandomElement.randomInt());
+    private final List<Consumer<ArrayList<Integer>>> operationsWithArrayList=new ArrayList<>();
+
+    public OperationsWithArrayList(){
+        createListOfOperationsWithArrayList();
     }
 
-    public void C_AddInMiddle(ArrayList<Integer> copyCol) {
-        copyCol.add(GenerateRandomElement.randomInRange(copyCol.size()), GenerateRandomElement.randomInt());
+    public Consumer<ArrayList<Integer>> addInBeginning() {
+        return input -> input.add(0, GenerateRandomElement.randomInt());
     }
 
-    public void D_AddInEnd(ArrayList<Integer> copyCol) {
-        copyCol.add(GenerateRandomElement.randomInt());
+    public Consumer<ArrayList<Integer>> addInMiddle() {
+        return input -> input.add(GenerateRandomElement.randomInRange(input.size()), GenerateRandomElement.randomInt());
     }
 
-    public void E_Search(ArrayList<Integer> copyCol) {
-        Integer searchEL = GenerateRandomElement.randomInt();
-        for (Integer val : copyCol) {
-            if (searchEL.equals(val)) {
-                break;
+    public Consumer<ArrayList<Integer>> addInEnd() {
+        return input -> input.add(GenerateRandomElement.randomInt());
+    }
+
+    public Consumer<ArrayList<Integer>> search() {
+        return input -> {
+            Integer searchEL = GenerateRandomElement.randomInt();
+            for (Integer val : input) {
+                if (searchEL.equals(val)) {
+                    break;
+                }
             }
-        }
+        };
     }
 
-    public void F_RemoveFromBegining(ArrayList<Integer> copyCol) {
-        copyCol.remove(0);
+    public Consumer<ArrayList<Integer>> removeFromBegining() {
+        return input -> input.remove(0);
     }
 
-    public void G_RemoveInMiddle(ArrayList<Integer> copyCol) {
-        copyCol.remove(GenerateRandomElement.randomInRange(copyCol.size()));
+    public Consumer<ArrayList<Integer>> removeInMiddle() {
+        return input -> input.remove(GenerateRandomElement.randomInRange(input.size()));
     }
 
-    public void H_RemoveInEnd(ArrayList<Integer> copyCol) {
-        copyCol.remove(copyCol.size() - 1);
+    public Consumer<ArrayList<Integer>> removeInEnd() {
+        return input -> input.remove(input.size() - 1);
+    }
+    private void createListOfOperationsWithArrayList(){
+        operationsWithArrayList.add(addInBeginning());
+        operationsWithArrayList.add(addInMiddle());
+        operationsWithArrayList.add(addInEnd());
+        operationsWithArrayList.add(search());
+        operationsWithArrayList.add(removeFromBegining());
+        operationsWithArrayList.add(removeInMiddle());
+        operationsWithArrayList.add(removeInEnd());
+    }
+    public List<Consumer<ArrayList<Integer>>> getOperationsWithArrayList(){
+        return operationsWithArrayList;
     }
 }

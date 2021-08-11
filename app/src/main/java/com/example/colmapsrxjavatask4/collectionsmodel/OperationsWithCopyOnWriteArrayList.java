@@ -1,41 +1,68 @@
 package com.example.colmapsrxjavatask4.collectionsmodel;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.function.Consumer;
 
 public class OperationsWithCopyOnWriteArrayList {
-    public void B_AddInBeginning(CopyOnWriteArrayList<Integer> copyCol) {
-        copyCol.add(0, GenerateRandomElement.randomInt());
+
+    private final   List<Consumer<CopyOnWriteArrayList<Integer>>> operationsWithCopyOnWriteArrayList=new ArrayList<>();
+
+    public OperationsWithCopyOnWriteArrayList(){
+        createListOfOperationsWithCopyOnWriteArrayList();
     }
 
-    public void C_AddInMiddle(CopyOnWriteArrayList<Integer> copyCol) {
-        copyCol.add(GenerateRandomElement.randomInRange(copyCol.size()), GenerateRandomElement.randomInt());
-
+    public Consumer<CopyOnWriteArrayList<Integer>> addInBeginning() {
+        return input -> input.add(0, GenerateRandomElement.randomInt());
     }
 
-    public void D_AddInEnd(CopyOnWriteArrayList<Integer> copyCol) {
-        copyCol.add(GenerateRandomElement.randomInt());
+    public Consumer<CopyOnWriteArrayList<Integer>> addInMiddle() {
+        return input -> input.add(GenerateRandomElement.randomInRange(input.size()), GenerateRandomElement.randomInt());
     }
 
-    public void E_Search(CopyOnWriteArrayList<Integer> copyCol) {
+    public Consumer<CopyOnWriteArrayList<Integer>> addInEnd() {
+        return input -> input.add(GenerateRandomElement.randomInt());
+    }
 
-        Integer searchEL = GenerateRandomElement.randomInt();
-
-        for (Integer val : copyCol) {
-            if (searchEL.equals(val)) {
-                break;
+    public Consumer<CopyOnWriteArrayList<Integer>> search() {
+        return input -> {
+            Integer searchEL = GenerateRandomElement.randomInt();
+            for (Integer val : input) {
+                if (searchEL.equals(val)) {
+                    break;
+                }
             }
-        }
+        };
     }
 
-    public void F_RemoveFromBegining(CopyOnWriteArrayList<Integer> copyCol) {
-        copyCol.remove(0);
+    public Consumer<CopyOnWriteArrayList<Integer>> removeFromBegining() {
+        return input -> input.remove(0);
     }
 
-    public void G_RemoveInMiddle(CopyOnWriteArrayList<Integer> copyCol) {
-        copyCol.remove(GenerateRandomElement.randomInRange(copyCol.size()));
+    public Consumer<CopyOnWriteArrayList<Integer>> removeInMiddle() {
+        return input -> input.remove(GenerateRandomElement.randomInRange(input.size()));
     }
 
-    public void H_RemoveInEnd(CopyOnWriteArrayList<Integer> copyCol) {
-        copyCol.remove(copyCol.size() - 1);
+    public Consumer<CopyOnWriteArrayList<Integer>> removeInEnd() {
+        return input -> input.remove(input.size() - 1);
     }
+
+    private void createListOfOperationsWithCopyOnWriteArrayList() {
+        operationsWithCopyOnWriteArrayList.add(addInBeginning());
+        operationsWithCopyOnWriteArrayList.add(addInMiddle());
+        operationsWithCopyOnWriteArrayList.add(addInEnd());
+        operationsWithCopyOnWriteArrayList.add(search());
+        operationsWithCopyOnWriteArrayList.add(removeFromBegining());
+        operationsWithCopyOnWriteArrayList.add(removeInMiddle());
+        operationsWithCopyOnWriteArrayList.add(removeInEnd());
+    }
+
+    public List<Consumer<CopyOnWriteArrayList<Integer>>> getOperationsWithCopyOnWriteArrayList(){
+        return operationsWithCopyOnWriteArrayList;
+    }
+
 }
+
+
+

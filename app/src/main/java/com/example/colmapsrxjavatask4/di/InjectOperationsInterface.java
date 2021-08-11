@@ -11,7 +11,9 @@ import dagger.hilt.components.SingletonComponent;
 
 @EntryPoint
 @InstallIn(SingletonComponent.class)
+
 public interface InjectOperationsInterface  {
+
     default  FillingCollections getFillingCollection(){
         return new FillingCollections();
     }
