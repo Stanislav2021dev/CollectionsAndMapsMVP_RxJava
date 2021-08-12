@@ -65,9 +65,9 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
         fillingCollections.createFillingCollectionsOperationsList(numElementsCollection);
 
         ArrayList<Consumer<?>> operationsWithCollectionsList = new ArrayList<>();
-        operationsWithCollectionsList.addAll(operationsWithArrayList.getOperationsWithArrayList(numElementsCollection));
-        operationsWithCollectionsList.addAll(operationsWithLinkedList.getOperationsWithLinkedList(numElementsCollection));
-        operationsWithCollectionsList.addAll(operationsWithCopyOnWriteArrayList.getOperationsWithCopyOnWriteArrayList(numElementsCollection));
+        operationsWithCollectionsList.addAll(operationsWithArrayList.getOperationsWithArrayList());
+        operationsWithCollectionsList.addAll(operationsWithLinkedList.getOperationsWithLinkedList());
+        operationsWithCollectionsList.addAll(operationsWithCopyOnWriteArrayList.getOperationsWithCopyOnWriteArrayList());
 
         Consumer<?>[] operationsWithCollectionsArray = new Consumer[21];
         for (Consumer<?> consumer : operationsWithCollectionsList) {

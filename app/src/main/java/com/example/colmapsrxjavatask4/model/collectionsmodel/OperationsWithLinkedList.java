@@ -58,7 +58,7 @@ public class OperationsWithLinkedList {
         operationsWithLinkedList.add(removeInEnd());
     }
 
-    public List<Consumer<LinkedList<Integer>>> getOperationsWithLinkedList(int numElementsCollection) {
+    public List<Consumer<LinkedList<Integer>>> getOperationsWithLinkedList() {
         return operationsWithLinkedList;
     }
 }

@@ -56,7 +56,7 @@ public class OperationsWithArrayList {
         operationsWithArrayList.add(removeInEnd());
     }
 
-    public List<Consumer<ArrayList<Integer>>> getOperationsWithArrayList(int numElementsCollection) {
+    public List<Consumer<ArrayList<Integer>>> getOperationsWithArrayList() {
         return operationsWithArrayList;
     }
 }

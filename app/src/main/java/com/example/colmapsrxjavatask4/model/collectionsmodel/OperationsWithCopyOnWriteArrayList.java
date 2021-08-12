@@ -60,7 +60,7 @@ public class OperationsWithCopyOnWriteArrayList {
         operationsWithCopyOnWriteArrayList.add(removeInEnd());
     }
 
-    public List<Consumer<CopyOnWriteArrayList<Integer>>> getOperationsWithCopyOnWriteArrayList(int numElementsCollection) {
+    public List<Consumer<CopyOnWriteArrayList<Integer>>> getOperationsWithCopyOnWriteArrayList() {
         return operationsWithCopyOnWriteArrayList;
     }
 

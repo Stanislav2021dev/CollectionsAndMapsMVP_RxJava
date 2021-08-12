@@ -51,7 +51,7 @@ public class CollectionsFragment extends MvpAppCompatFragment implements Collect
                 return;
             }
             numElementsCollection
-                    = Integer.parseInt(String.valueOf(binding.numCol.getText()));
+                    = Integer.parseInt(String.valueOf((binding.numCol.getText())));
             mCollectionsPresenter.start(numElementsCollection);
         });
         return binding.getRoot();

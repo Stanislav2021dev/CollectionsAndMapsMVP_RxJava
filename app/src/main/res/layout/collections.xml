@@ -5,11 +5,10 @@
     <data>
         <import type="android.view.View"/>
         <import type="android.text.TextUtils"/>
-        <variable name="index" type="Integer" />
         <variable name="timeResult" type="String[]" />
         <variable name="pbStatus" type="Boolean[]" />
         <variable name="butStatus" type="Boolean" />
-        <variable name="amountElements" type="com.example.colmapsrxjavatask4.view.collectionsview.CollectionsFragment" />
+
     </data>
 
     <ScrollView
@@ -39,7 +38,6 @@
             <Button
                 android:id="@+id/testCol"
                 style="@style/mButton"
-
                 android:enabled="@{butStatus}"
                 android:text="@string/test" />
 
