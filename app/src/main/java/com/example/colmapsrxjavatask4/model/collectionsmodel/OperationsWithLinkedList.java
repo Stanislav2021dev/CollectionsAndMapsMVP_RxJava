@@ -1,4 +1,4 @@
-package com.example.colmapsrxjavatask4.collectionsmodel;
+package com.example.colmapsrxjavatask4.model.collectionsmodel;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -7,9 +7,9 @@ import java.util.function.Consumer;
 
 public class OperationsWithLinkedList {
 
-    public final List<Consumer<LinkedList<Integer>>> operationsWithLinkedList=new ArrayList<>();
+    public final List<Consumer<LinkedList<Integer>>> operationsWithLinkedList = new ArrayList<>();
 
-    public OperationsWithLinkedList(){
+    public OperationsWithLinkedList() {
         createListOfOperationsWithLinkedList();
     }
 
@@ -57,7 +57,8 @@ public class OperationsWithLinkedList {
         operationsWithLinkedList.add(removeInMiddle());
         operationsWithLinkedList.add(removeInEnd());
     }
-    public List<Consumer<LinkedList<Integer>>> getOperationsWithLinkedList(){
+
+    public List<Consumer<LinkedList<Integer>>> getOperationsWithLinkedList(int numElementsCollection) {
         return operationsWithLinkedList;
     }
 }

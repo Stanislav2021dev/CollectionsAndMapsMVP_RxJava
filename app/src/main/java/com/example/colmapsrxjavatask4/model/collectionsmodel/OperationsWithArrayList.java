@@ -1,13 +1,13 @@
-package com.example.colmapsrxjavatask4.collectionsmodel;
+package com.example.colmapsrxjavatask4.model.collectionsmodel;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
 public class OperationsWithArrayList {
-    private final List<Consumer<ArrayList<Integer>>> operationsWithArrayList=new ArrayList<>();
+    private final List<Consumer<ArrayList<Integer>>> operationsWithArrayList = new ArrayList<>();
 
-    public OperationsWithArrayList(){
+    public OperationsWithArrayList() {
         createListOfOperationsWithArrayList();
     }
 
@@ -45,7 +45,8 @@ public class OperationsWithArrayList {
     public Consumer<ArrayList<Integer>> removeInEnd() {
         return input -> input.remove(input.size() - 1);
     }
-    private void createListOfOperationsWithArrayList(){
+
+    private void createListOfOperationsWithArrayList() {
         operationsWithArrayList.add(addInBeginning());
         operationsWithArrayList.add(addInMiddle());
         operationsWithArrayList.add(addInEnd());
@@ -54,7 +55,8 @@ public class OperationsWithArrayList {
         operationsWithArrayList.add(removeInMiddle());
         operationsWithArrayList.add(removeInEnd());
     }
-    public List<Consumer<ArrayList<Integer>>> getOperationsWithArrayList(){
+
+    public List<Consumer<ArrayList<Integer>>> getOperationsWithArrayList(int numElementsCollection) {
         return operationsWithArrayList;
     }
 }

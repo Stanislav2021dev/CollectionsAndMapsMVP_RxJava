@@ -1,32 +1,29 @@
-package com.example.colmapsrxjavatask4.view;
+package com.example.colmapsrxjavatask4.view.collectionsview;
 
-import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
 import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.databinding.ObservableField;
+
 import com.example.colmapsrxjavatask4.R;
-import com.example.colmapsrxjavatask4.Singletone;
 import com.example.colmapsrxjavatask4.databinding.CollectionsBinding;
-import com.example.colmapsrxjavatask4.di.InjectSingletoneInterface;
-import com.example.colmapsrxjavatask4.presenters.CollectionsPresenter;
+import com.example.colmapsrxjavatask4.presenters.collectionspresenter.CollectionsPresenter;
+
 import org.jetbrains.annotations.NotNull;
-import dagger.hilt.EntryPoints;
-import dagger.hilt.internal.GeneratedComponent;
+
 import moxy.MvpAppCompatFragment;
 import moxy.presenter.InjectPresenter;
 
-public class CollectionsFragment extends MvpAppCompatFragment implements CollectionView, InjectSingletoneInterface, GeneratedComponent {
-    public static ObservableField<String> amountEl = new ObservableField<>("");
+public class CollectionsFragment extends MvpAppCompatFragment implements CollectionView {
+
     @InjectPresenter
     public CollectionsPresenter mCollectionsPresenter;
     private CollectionsBinding binding;
-    private Singletone s;
+
     private int pageNumber;
+    private int numElementsCollection;
 
     public static CollectionsFragment newInstance(int page) {
         CollectionsFragment
@@ -40,28 +37,22 @@ public class CollectionsFragment extends MvpAppCompatFragment implements Collect
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Log.v("MyApp", "on create");
         pageNumber = getArguments() != null ? getArguments().getInt("num") : 1;
     }
 
     @Nullable
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        InjectSingletoneInterface mInterface= EntryPoints.get(this,InjectSingletoneInterface.class);
-        s=mInterface.getSingletone();
         binding = CollectionsBinding.inflate(inflater, container, false);
         binding.setButStatus(true);
         binding.testCol.setOnClickListener(v -> {
-            CollectionsFragment amountElements = new CollectionsFragment();
             if (String.valueOf(binding.numCol.getText()).isEmpty()) {
                 binding.numCol.setHint(R.string.warning);
                 return;
             }
-            s.numElementsCollection = Integer.parseInt(String.valueOf(binding.numCol.getText()));
-            binding.setAmountElements(amountElements);
-            Log.v("MyApp", "amount elements=" + (s.numElementsCollection));
-                mCollectionsPresenter.start();
-
+            numElementsCollection
+                    = Integer.parseInt(String.valueOf(binding.numCol.getText()));
+            mCollectionsPresenter.start(numElementsCollection);
         });
         return binding.getRoot();
     }
@@ -85,5 +76,4 @@ public class CollectionsFragment extends MvpAppCompatFragment implements Collect
     public void showPbStatus(Boolean[] pbStatus) {
         binding.setPbStatus(pbStatus);
     }
-
 }

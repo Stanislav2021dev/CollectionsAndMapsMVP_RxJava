@@ -1,4 +1,4 @@
-package com.example.colmapsrxjavatask4.collectionsmodel;
+package com.example.colmapsrxjavatask4.model.collectionsmodel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,9 +7,11 @@ import java.util.function.Consumer;
 
 public class OperationsWithCopyOnWriteArrayList {
 
-    private final   List<Consumer<CopyOnWriteArrayList<Integer>>> operationsWithCopyOnWriteArrayList=new ArrayList<>();
+    private final List<Consumer<CopyOnWriteArrayList<Integer>>>
+            operationsWithCopyOnWriteArrayList =
+            new ArrayList<>();
 
-    public OperationsWithCopyOnWriteArrayList(){
+    public OperationsWithCopyOnWriteArrayList() {
         createListOfOperationsWithCopyOnWriteArrayList();
     }
 
@@ -58,7 +60,7 @@ public class OperationsWithCopyOnWriteArrayList {
         operationsWithCopyOnWriteArrayList.add(removeInEnd());
     }
 
-    public List<Consumer<CopyOnWriteArrayList<Integer>>> getOperationsWithCopyOnWriteArrayList(){
+    public List<Consumer<CopyOnWriteArrayList<Integer>>> getOperationsWithCopyOnWriteArrayList(int numElementsCollection) {
         return operationsWithCopyOnWriteArrayList;
     }
 

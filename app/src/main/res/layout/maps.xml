@@ -1,8 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView android:layout_width="match_parent"
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <import type="android.view.View"/>
+        <import type="android.text.TextUtils"/>
+        <variable name="index" type="Integer" />
+        <variable name="timeResult" type="String[]" />
+        <variable name="pbStatus" type="Boolean[]" />
+        <variable name="butStatus" type="Boolean" />
+
+    </data>
+
+
+    <ScrollView
+    android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    android:orientation="vertical">
+
+
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -12,17 +28,21 @@
             android:text="@string/maps"/>
 
         <EditText
-            android:id="@+id/numMaps"
+            android:id="@+id/numMap"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="number"
+            android:text=""
             android:hint="@string/number_elements"
+            android:inputType="number"
+            android:saveEnabled="true"
             />
+
 
         <Button
             android:id="@+id/testMap"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:enabled="@{butStatus}"
             android:text="@string/test" />
 
         <LinearLayout
@@ -41,15 +61,21 @@
             style="@style/mLaResult">
             <ProgressBar
                 android:id="@+id/pb1"
+                android:visibility="@{pbStatus[0] ? View.VISIBLE : View.GONE }"
                 style="@style/myPb" />
             <TextView
                 android:id="@+id/time1"
+                android:visibility="@{TextUtils.isEmpty(timeResult[0]) ? pbStatus[0]? View.GONE : View.INVISIBLE: View.VISIBLE}"
+                android:text="@{timeResult[0]}"
                 style="@style/timeResult" />
             <ProgressBar
                 android:id="@+id/pb5"
+                android:visibility="@{pbStatus[4] ? View.VISIBLE : View.GONE }"
                 style="@style/myPb" />
             <TextView
                 android:id="@+id/time5"
+                android:visibility="@{TextUtils.isEmpty(timeResult[4]) ? pbStatus[4]? View.GONE : View.INVISIBLE: View.VISIBLE}"
+                android:text="@{timeResult[4]}"
                 style="@style/timeResult" />
         </LinearLayout>
         <TextView
@@ -59,15 +85,21 @@
             style="@style/mLaResult">
             <ProgressBar
                 android:id="@+id/pb2"
+                android:visibility="@{pbStatus[1] ? View.VISIBLE : View.GONE }"
                 style="@style/myPb" />
             <TextView
                 android:id="@+id/time2"
+                android:visibility="@{TextUtils.isEmpty(timeResult[1]) ? pbStatus[1]? View.GONE : View.INVISIBLE: View.VISIBLE}"
+                android:text="@{timeResult[1]}"
                 style="@style/timeResult" />
             <ProgressBar
                 android:id="@+id/pb6"
+                android:visibility="@{pbStatus[5] ? View.VISIBLE : View.GONE }"
                 style="@style/myPb" />
             <TextView
                 android:id="@+id/time6"
+                android:visibility="@{TextUtils.isEmpty(timeResult[5]) ? pbStatus[5]? View.GONE : View.INVISIBLE: View.VISIBLE}"
+                android:text="@{timeResult[5]}"
                 style="@style/timeResult"/>
         </LinearLayout>
         <TextView
@@ -77,15 +109,21 @@
             style="@style/mLaResult">
             <ProgressBar
                 android:id="@+id/pb3"
+                android:visibility="@{pbStatus[2] ? View.VISIBLE : View.GONE }"
                 style="@style/myPb" />
             <TextView
                 android:id="@+id/time3"
+                android:visibility="@{TextUtils.isEmpty(timeResult[2]) ? pbStatus[2]? View.GONE : View.INVISIBLE: View.VISIBLE}"
+                android:text="@{timeResult[2]}"
                 style="@style/timeResult"/>
             <ProgressBar
                 android:id="@+id/pb7"
+                android:visibility="@{pbStatus[6] ? View.VISIBLE : View.GONE }"
                 style="@style/myPb" />
             <TextView
                 android:id="@+id/time7"
+                android:visibility="@{TextUtils.isEmpty(timeResult[6]) ? pbStatus[6]? View.GONE : View.INVISIBLE: View.VISIBLE}"
+                android:text="@{timeResult[6]}"
                 style="@style/timeResult" />
         </LinearLayout>
         <TextView
@@ -96,16 +134,23 @@
             style="@style/mLaResult">
             <ProgressBar
                 android:id="@+id/pb4"
+                android:visibility="@{pbStatus[3] ? View.VISIBLE : View.GONE }"
                 style="@style/myPb" />
             <TextView
                 android:id="@+id/time4"
+                android:visibility="@{TextUtils.isEmpty(timeResult[3]) ? pbStatus[3]? View.GONE : View.INVISIBLE: View.VISIBLE}"
+                android:text="@{timeResult[3]}"
                 style="@style/timeResult"/>
             <ProgressBar
                 android:id="@+id/pb8"
+                android:visibility="@{pbStatus[7] ? View.VISIBLE : View.GONE }"
                 style="@style/myPb" />
             <TextView
                 android:id="@+id/time8"
+                android:visibility="@{TextUtils.isEmpty(timeResult[7]) ? pbStatus[7]? View.GONE : View.INVISIBLE: View.VISIBLE}"
+                android:text="@{timeResult[7]}"
                 style="@style/timeResult" />
         </LinearLayout>
     </LinearLayout>
 </ScrollView>
+</layout>

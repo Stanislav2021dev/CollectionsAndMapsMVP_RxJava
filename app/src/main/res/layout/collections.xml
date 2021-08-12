@@ -9,8 +9,7 @@
         <variable name="timeResult" type="String[]" />
         <variable name="pbStatus" type="Boolean[]" />
         <variable name="butStatus" type="Boolean" />
-        <variable name="butTest" type="com.example.colmapsrxjavatask4.view.CollectionsFragment" />
-        <variable name="amountElements" type="com.example.colmapsrxjavatask4.view.CollectionsFragment" />
+        <variable name="amountElements" type="com.example.colmapsrxjavatask4.view.collectionsview.CollectionsFragment" />
     </data>
 
     <ScrollView
@@ -32,16 +31,15 @@
                 android:id="@+id/numCol"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@={amountElements.amountEl}"
+                android:text=""
                 android:hint="@string/number_elements"
                 android:inputType="number"
                 android:saveEnabled="true"
                 />
-
-
             <Button
                 android:id="@+id/testCol"
                 style="@style/mButton"
+
                 android:enabled="@{butStatus}"
                 android:text="@string/test" />
 

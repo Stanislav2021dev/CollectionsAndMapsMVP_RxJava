@@ -1,4 +1,4 @@
-package com.example.colmapsrxjavatask4.collectionsmodel;
+package com.example.colmapsrxjavatask4.model.collectionsmodel;
 
 import java.util.Random;
 
