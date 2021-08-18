@@ -31,10 +31,11 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text=""
+                android:autofillHints="@string/number_elements"
                 android:hint="@string/number_elements"
                 android:inputType="number"
                 android:saveEnabled="true"
-                />
+                 />
             <Button
                 android:id="@+id/testCol"
                 style="@style/mButton"

@@ -174,8 +174,11 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
     @Override
     public void onDestroy() {
         super.onDestroy();
-        executor.shutdown();
+//        executor.shutdown();
         disposables.clear();
+    }
+    public  String[] getTimeResArray(){
+        return timeResArray;
     }
 
 }
