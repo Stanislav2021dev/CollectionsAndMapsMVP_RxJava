@@ -18,6 +18,9 @@ public class FillingCollectionsCallable implements Callable<Integer> {
     private final Subject<ResultClass.PbStatus> subjectStatus;
     private final FillingCollections fillingCollections;
 
+    private Long operationTime;
+
+
     public FillingCollectionsCallable(FillingCollections fillingCollections, Function function, Subject<ResultClass.TimeResult> subjectTime, Subject<ResultClass.PbStatus> subjectStatus) {
         this.function = function;
         this.subjectTime = subjectTime;
@@ -32,18 +35,12 @@ public class FillingCollectionsCallable implements Callable<Integer> {
         int index = collections * 8;
         subjectStatus.onNext(new ResultClass.PbStatus(index, true));
         long startTime = System.currentTimeMillis();
-
         function.apply(fillingCollections.getCollectionsList().get(collections));
-
-        Log.v("MyApp", "Size " + fillingCollections.getCollectionsList().get(collections).size());
-
-        long operationTime = System.currentTimeMillis() - startTime;
-
-        Log.v("MyApp", " index = " + index + "  collection = " + collections + "  it = " + "  time = " + operationTime);
-
+        operationTime = System.currentTimeMillis() - startTime;
         TimeUnit.SECONDS.sleep(1);
         subjectStatus.onNext(new ResultClass.PbStatus(index, false));
         subjectTime.onNext(new ResultClass.TimeResult(index, operationTime));
+
         return index;
     }
 }

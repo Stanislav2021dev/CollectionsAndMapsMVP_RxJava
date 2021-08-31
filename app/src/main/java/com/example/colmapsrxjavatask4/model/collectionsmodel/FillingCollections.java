@@ -81,4 +81,5 @@ public class FillingCollections {
     public List<Function> getOperationsFillingList() {
         return operationsFillingList;
     }
+
 }

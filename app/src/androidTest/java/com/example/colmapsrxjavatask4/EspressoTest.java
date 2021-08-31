@@ -78,7 +78,7 @@ import static org.junit.Assert.assertTrue;
         }
 
         @Test
-        public void globalTest() {
+        public void checkCorrectDisplayViewElements() {
 
             FragmentScenario<CollectionsFragment> scenario = FragmentScenario.launchInContainer(CollectionsFragment.class);
             scenario.onFragment(fragment -> {
@@ -133,10 +133,11 @@ import static org.junit.Assert.assertTrue;
         @Test
         public void checkWithRotation() throws RemoteException, InterruptedException {
 
-            rotateDevice();
             enterValue(valueForTest);
             rotateDevice();
             ViewShown.waitViewShown(withId(R.id.time24));
+
+
         }
 
     }

@@ -1,5 +1,7 @@
 package com.example.colmapsrxjavatask4.presenters.collectionspresenter;
 
+import androidx.annotation.VisibleForTesting;
+
 import com.example.colmapsrxjavatask4.di.InjectCallableTaskInterface;
 import com.example.colmapsrxjavatask4.di.InjectOperationsInterface;
 import com.example.colmapsrxjavatask4.di.InjectSchedulerInterface;
@@ -11,9 +13,12 @@ import com.example.colmapsrxjavatask4.model.collectionsmodel.OperationsWithLinke
 import com.example.colmapsrxjavatask4.presenters.ResultClass;
 import com.example.colmapsrxjavatask4.view.collectionsview.CollectionView;
 
+import org.jetbrains.annotations.TestOnly;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -26,6 +31,7 @@ import io.reactivex.rxjava3.core.Observer;
 import io.reactivex.rxjava3.core.Scheduler;
 import io.reactivex.rxjava3.disposables.CompositeDisposable;
 import io.reactivex.rxjava3.disposables.Disposable;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 import io.reactivex.rxjava3.subjects.Subject;
 import moxy.MvpPresenter;
 
@@ -40,8 +46,107 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
     private Subject<ResultClass.PbStatus> subjectPbStatus;
     private Boolean[] pbStatusResArray = new Boolean[24];
     private String[] timeResArray = new String[24];
+    private Observable<Integer>
+            mainObservable;
 
     public void start(int numElementsCollection) {
+
+        mainObservable=createMainObservable(numElementsCollection);
+        disposables.add(mainObservable.subscribe());
+
+    }
+
+
+    public Observer<ResultClass.TimeResult> timeResults() {
+        return new Observer<ResultClass.TimeResult>() {
+            @Override
+            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                timeResArray = new String[24];
+                getViewState().showButStatus(false);
+                getViewState().showTimeResult(timeResArray);
+            }
+
+            @Override
+            public void onNext(ResultClass.@NonNull TimeResult timeResult) {
+                timeResArray[timeResult.getIndex()] = String.valueOf(timeResult.getOperationTime());
+
+                try {
+                    TimeUnit.MILLISECONDS.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                getViewState().showTimeResult(timeResArray);
+
+                if (!Arrays.asList(timeResArray).contains(null)) {
+                    subjectTime.onComplete();
+                }
+            }
+
+            @Override
+            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+                getViewState().showButStatus(true);
+            }
+        };
+    }
+
+    public Observer<ResultClass.PbStatus> pbStatus() {
+        return new Observer<ResultClass.PbStatus>() {
+            @Override
+            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
+                pbStatusResArray = new Boolean[24];
+            }
+
+            @Override
+            public void onNext(ResultClass.@NonNull PbStatus pbStatus) {
+                pbStatusResArray[pbStatus.getIndex()] = pbStatus.getStatus();
+                try {
+                    TimeUnit.MILLISECONDS.sleep(100);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+
+                    getViewState().showPbStatus(pbStatusResArray);
+
+
+
+            }
+
+            @Override
+            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
+            }
+
+            @Override
+            public void onComplete() {
+            }
+        };
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+//        executor.shutdown();
+        disposables.clear();
+    }
+    public String[] getTimeResArray() {
+        return timeResArray;
+    }
+    public Boolean[] getPbStatusResArray() {
+        return pbStatusResArray;
+    }
+    public Observable<Integer> getMainObservable() {
+        return mainObservable;
+    }
+
+
+
+
+    public Observable<Integer> createMainObservable (int numElementsCollection){
 
         InjectCallableTaskInterface callableTaskInterface =
                 EntryPoints.get(this, InjectCallableTaskInterface.class);
@@ -61,7 +166,7 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
 
         executor = schedulerInterface.createExecutor();
         scheduler = schedulerInterface.createScheduler(executor);
-
+        System.out.println(numElementsCollection);
         fillingCollections.createFillingCollectionsOperationsList(numElementsCollection);
 
         ArrayList<Consumer<?>> operationsWithCollectionsList = new ArrayList<>();
@@ -112,73 +217,10 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
                                 .subscribeOn(scheduler))
                         .observeOn(AndroidSchedulers.mainThread());
 
-        Observable<Integer>
-                mainObservable =
+
+        mainObservable =
                 Observable.concat(fillingCollectionsObservable, operationsWithCollectionsObservable);
-        disposables.add(mainObservable.subscribe());
+
+        return mainObservable;
     }
-
-
-    public Observer<ResultClass.TimeResult> timeResults() {
-        return new Observer<ResultClass.TimeResult>() {
-            @Override
-            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-                timeResArray = new String[24];
-                getViewState().showButStatus(false);
-                getViewState().showTimeResult(timeResArray);
-            }
-
-            @Override
-            public void onNext(ResultClass.@NonNull TimeResult timeResult) {
-                timeResArray[timeResult.getIndex()] = String.valueOf(timeResult.getOperationTime());
-                getViewState().showTimeResult(timeResArray);
-                if (!Arrays.asList(timeResArray).contains(null)) {
-                    subjectTime.onComplete();
-                }
-            }
-
-            @Override
-            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-            }
-
-            @Override
-            public void onComplete() {
-                getViewState().showButStatus(true);
-            }
-        };
-    }
-
-    public Observer<ResultClass.PbStatus> pbStatus() {
-        return new Observer<ResultClass.PbStatus>() {
-            @Override
-            public void onSubscribe(@io.reactivex.rxjava3.annotations.NonNull Disposable d) {
-                pbStatusResArray = new Boolean[24];
-            }
-
-            @Override
-            public void onNext(ResultClass.@NonNull PbStatus pbStatus) {
-                pbStatusResArray[pbStatus.getIndex()] = pbStatus.getStatus();
-                getViewState().showPbStatus(pbStatusResArray);
-            }
-
-            @Override
-            public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
-            }
-
-            @Override
-            public void onComplete() {
-            }
-        };
-    }
-
-    @Override
-    public void onDestroy() {
-        super.onDestroy();
-//        executor.shutdown();
-        disposables.clear();
-    }
-    public  String[] getTimeResArray(){
-        return timeResArray;
-    }
-
 }

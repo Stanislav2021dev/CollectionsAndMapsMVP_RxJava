@@ -63,7 +63,7 @@ public class OperationsCollectionsCallable implements Callable<Integer> {
         subjectStatus.onNext(new ResultClass.PbStatus(index, false));
         subjectTime.onNext(new ResultClass.TimeResult(index, operationTime));
 
-        Log.v("MyApp", " index = " + index + "  collection = " + collections + "  it = " + iteration + "  time = ");
+//        Log.v("MyApp", " index = " + index + "  collection = " + collections + "  it = " + iteration + "  time = ");
 
         return index;
     }

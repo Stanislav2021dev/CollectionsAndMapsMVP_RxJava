@@ -74,8 +74,4 @@ dependencies {
     debugImplementation 'androidx.test:core:1.4.0'
 
     androidTestImplementation 'com.android.support.test.uiautomator:uiautomator-v18:2.1.3'
-
-
-
-
 }
