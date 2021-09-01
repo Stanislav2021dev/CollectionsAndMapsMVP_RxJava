@@ -35,11 +35,7 @@ public class FillingMapsCallable implements Callable<Integer> {
 
         function.apply(fillingMaps.getMapsList().get(maps));
 
-        Log.v("MyApp", "Size " + fillingMaps.getMapsList().get(maps).size());
-
         long operationTime = System.currentTimeMillis() - startTime;
-
-        Log.v("MyApp", "Map " + " index = " + index + "  collection = " + maps + "  it = " + "  time = " + operationTime);
 
         TimeUnit.SECONDS.sleep(1);
         subjectStatus.onNext(new ResultClass.PbStatus(index, false));

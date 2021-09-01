@@ -57,9 +57,6 @@ public class OperationsMapsCallable implements Callable<Integer> {
         TimeUnit.SECONDS.sleep(1);
         subjectStatus.onNext(new ResultClass.PbStatus(index, false));
         subjectTime.onNext(new ResultClass.TimeResult(index, operationTime));
-
-        Log.v("MyApp", " index = " + index + "  collection = " + collections + "  it = " + iteration + "  time = ");
-
         return index;
     }
 }

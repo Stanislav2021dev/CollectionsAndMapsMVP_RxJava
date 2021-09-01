@@ -1,5 +1,6 @@
 package com.example.colmapsrxjavatask4;
 
+
 import com.example.colmapsrxjavatask4.di.InjectCallableTaskInterface;
 import com.example.colmapsrxjavatask4.di.InjectOperationsInterface;
 import com.example.colmapsrxjavatask4.di.InjectSubjectInterface;
@@ -9,23 +10,23 @@ import com.example.colmapsrxjavatask4.presenters.collectionspresenter.Collection
 import org.junit.Before;
 import org.junit.ClassRule;
 import org.junit.Test;
-
-import java.util.Arrays;
+import org.junit.runner.RunWith;
+import org.junit.runners.JUnit4;
 
 import dagger.hilt.EntryPoints;
 import dagger.hilt.internal.GeneratedComponent;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
-
-public class JUnitTest implements InjectOperationsInterface, InjectCallableTaskInterface, InjectSubjectInterface, GeneratedComponent {
+@RunWith(JUnit4.class)
+public class JUnitTestCollections implements InjectOperationsInterface, InjectCallableTaskInterface, InjectSubjectInterface, GeneratedComponent {
+    @ClassRule
+    public static final RxTestSchedulerRule testSchedulerRule = new RxTestSchedulerRule();
     private final int numElementsForTest = 100000;
     private final CollectionsPresenter collectionsPresenter = new CollectionsPresenter();
     private FillingCollections fillingCollections;
-
-    @ClassRule
-    public static final RxTestSchedulerRule testSchedulerRule = new RxTestSchedulerRule();
 
     @Before
     public void init() {
@@ -48,32 +49,26 @@ public class JUnitTest implements InjectOperationsInterface, InjectCallableTaskI
 
     @Test
     public void timeResultsTest() throws InterruptedException {
-        collectionsPresenter.createMainObservable(numElementsForTest);
-        collectionsPresenter.getMainObservable()
+        collectionsPresenter.start(numElementsForTest);
+        collectionsPresenter.getSubjectTime()
                 .test()
                 .await()
                 .assertNoErrors();
         for (String time : collectionsPresenter.getTimeResArray()) {
             assertNotNull(time);
         }
-
-        System.out.println("TimeResult " + Arrays.toString(collectionsPresenter.getTimeResArray()));
     }
 
     @Test
     public void progressBarTest() throws InterruptedException {
-
-        collectionsPresenter.createMainObservable(numElementsForTest);
-        collectionsPresenter.getMainObservable()
+        collectionsPresenter.start(numElementsForTest);
+        collectionsPresenter.getSubjectPbStatus()
                 .test()
                 .await()
                 .assertNoErrors();
-        System.out.println(Arrays.toString(collectionsPresenter.getPbStatusResArray()));
         for (Boolean status : collectionsPresenter.getPbStatusResArray()) {
             assertFalse(status);
         }
     }
 }
-
-
 

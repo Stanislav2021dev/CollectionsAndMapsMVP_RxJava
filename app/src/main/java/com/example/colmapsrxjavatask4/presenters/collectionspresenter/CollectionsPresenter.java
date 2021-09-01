@@ -1,6 +1,5 @@
 package com.example.colmapsrxjavatask4.presenters.collectionspresenter;
 
-import androidx.annotation.VisibleForTesting;
 
 import com.example.colmapsrxjavatask4.di.InjectCallableTaskInterface;
 import com.example.colmapsrxjavatask4.di.InjectOperationsInterface;
@@ -13,7 +12,7 @@ import com.example.colmapsrxjavatask4.model.collectionsmodel.OperationsWithLinke
 import com.example.colmapsrxjavatask4.presenters.ResultClass;
 import com.example.colmapsrxjavatask4.view.collectionsview.CollectionView;
 
-import org.jetbrains.annotations.TestOnly;
+
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -49,13 +48,16 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
     private Observable<Integer>
             mainObservable;
 
-    public void start(int numElementsCollection) {
+    public CollectionsPresenter(){
+        initExecutor();
+    }
 
+    public void start(int numElementsCollection) {
+        disposables.clear();
         mainObservable=createMainObservable(numElementsCollection);
         disposables.add(mainObservable.subscribe());
 
     }
-
 
     public Observer<ResultClass.TimeResult> timeResults() {
         return new Observer<ResultClass.TimeResult>() {
@@ -69,24 +71,14 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
             @Override
             public void onNext(ResultClass.@NonNull TimeResult timeResult) {
                 timeResArray[timeResult.getIndex()] = String.valueOf(timeResult.getOperationTime());
-
-                try {
-                    TimeUnit.MILLISECONDS.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
                 getViewState().showTimeResult(timeResArray);
-
                 if (!Arrays.asList(timeResArray).contains(null)) {
                     subjectTime.onComplete();
                 }
             }
-
             @Override
             public void onError(@io.reactivex.rxjava3.annotations.NonNull Throwable e) {
             }
-
             @Override
             public void onComplete() {
                 getViewState().showButStatus(true);
@@ -104,17 +96,12 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
             @Override
             public void onNext(ResultClass.@NonNull PbStatus pbStatus) {
                 pbStatusResArray[pbStatus.getIndex()] = pbStatus.getStatus();
-                try {
-                    TimeUnit.MILLISECONDS.sleep(100);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+
+                getViewState().showPbStatus(pbStatusResArray);
+                if (!Arrays.asList(pbStatusResArray).contains(null)&&
+                    !Arrays.asList(pbStatusResArray).contains(true)){
+                    subjectPbStatus.onComplete();
                 }
-
-
-                    getViewState().showPbStatus(pbStatusResArray);
-
-
-
             }
 
             @Override
@@ -130,28 +117,36 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
     @Override
     public void onDestroy() {
         super.onDestroy();
-//        executor.shutdown();
+        executor.shutdown();
         disposables.clear();
     }
+
     public String[] getTimeResArray() {
         return timeResArray;
     }
     public Boolean[] getPbStatusResArray() {
         return pbStatusResArray;
     }
-    public Observable<Integer> getMainObservable() {
-        return mainObservable;
+
+    public Subject<ResultClass.TimeResult> getSubjectTime(){
+        return subjectTime;
+    }
+    public Subject<ResultClass.PbStatus> getSubjectPbStatus(){
+        return subjectPbStatus;
     }
 
-
-
+    public void initExecutor(){
+        InjectSchedulerInterface schedulerInterface =
+                EntryPoints.get(this, InjectSchedulerInterface.class);
+        executor = schedulerInterface.createExecutor();
+        scheduler = schedulerInterface.createScheduler(executor);
+    }
 
     public Observable<Integer> createMainObservable (int numElementsCollection){
 
         InjectCallableTaskInterface callableTaskInterface =
                 EntryPoints.get(this, InjectCallableTaskInterface.class);
-        InjectSchedulerInterface schedulerInterface =
-                EntryPoints.get(this, InjectSchedulerInterface.class);
+
         InjectOperationsInterface operationsInterface =
                 EntryPoints.get(this, InjectOperationsInterface.class);
 
@@ -163,10 +158,6 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
         OperationsWithCopyOnWriteArrayList operationsWithCopyOnWriteArrayList =
                 operationsInterface.getOperationsWithCopyOnWriteArrayList();
 
-
-        executor = schedulerInterface.createExecutor();
-        scheduler = schedulerInterface.createScheduler(executor);
-        System.out.println(numElementsCollection);
         fillingCollections.createFillingCollectionsOperationsList(numElementsCollection);
 
         ArrayList<Consumer<?>> operationsWithCollectionsList = new ArrayList<>();
@@ -216,7 +207,6 @@ public class CollectionsPresenter extends MvpPresenter<CollectionView> implement
                                         operationsWithCollectionsList, subjectTime, subjectPbStatus))
                                 .subscribeOn(scheduler))
                         .observeOn(AndroidSchedulers.mainThread());
-
 
         mainObservable =
                 Observable.concat(fillingCollectionsObservable, operationsWithCollectionsObservable);

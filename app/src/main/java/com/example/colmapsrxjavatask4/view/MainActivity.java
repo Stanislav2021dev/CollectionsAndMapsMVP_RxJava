@@ -21,7 +21,6 @@ import moxy.MvpAppCompatActivity;
 public class MainActivity extends MvpAppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.v("MyApp", "on create activity ");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ViewPager2 pager = findViewById(R.id.viewpager);

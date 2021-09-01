@@ -1,9 +1,5 @@
 package com.example.colmapsrxjavatask4.presenters.mapspresenter;
 
-import android.os.Build;
-
-import androidx.annotation.RequiresApi;
-
 import com.example.colmapsrxjavatask4.di.InjectCallableTaskInterface;
 import com.example.colmapsrxjavatask4.di.InjectOperationsInterface;
 import com.example.colmapsrxjavatask4.di.InjectSchedulerInterface;
@@ -42,87 +38,17 @@ public class MapsPresenter extends MvpPresenter<MapView> implements InjectSubjec
     private Subject<ResultClass.PbStatus> subjectPbStatus;
     private Boolean[] pbStatusResArray = new Boolean[8];
     private String[] timeResArray = new String[8];
+    private Observable<Integer> mainObservable;
 
-    @RequiresApi(api = Build.VERSION_CODES.N)
-    public void start(int numElementsMap) {
-
-
-        InjectCallableTaskInterface
-                callableTaskInterface =
-                EntryPoints.get(this, InjectCallableTaskInterface.class);
-        InjectSchedulerInterface
-                schedulerInterface =
-                EntryPoints.get(this, InjectSchedulerInterface.class);
-        InjectOperationsInterface
-                operationsInterface =
-                EntryPoints.get(this, InjectOperationsInterface.class);
-
-        FillingMaps fillingMaps = operationsInterface.getFillingMaps();
-        OperationsWithHashMap operationsWithHashMap =
-                operationsInterface.getOperationsWithHashMap();
-        OperationsWithTreeMap operationsWithTreeMap =
-                operationsInterface.getOperationsWithTreeMap();
-
-
-        fillingMaps.createFillingMapsOperationsList(numElementsMap);
-
-        executor = schedulerInterface.createExecutor();
-        scheduler = schedulerInterface.createScheduler(executor);
-
-        ArrayList<Consumer<?>> operationsWithMapsList = new ArrayList<>();
-        operationsWithMapsList.addAll(operationsWithHashMap.getOperationsWithHashMap());
-        operationsWithMapsList.addAll(operationsWithTreeMap.getOperationsWithTreeMap());
-
-
-        Consumer<?>[] operationsWithCollectionsArray = new Consumer[6];
-        for (Consumer<?> consumer : operationsWithMapsList) {
-            operationsWithCollectionsArray[operationsWithMapsList.indexOf(consumer)] = consumer;
-        }
-
-        Function[] operationsFillingArray = new Function[2];
-        for (Function function : fillingMaps.getOperationsFillingList()) {
-            operationsFillingArray[fillingMaps.getOperationsFillingList().indexOf(function)] =
-                    function;
-        }
-
-
-        InjectSubjectInterface mInterface = EntryPoints.get(this, InjectSubjectInterface.class);
-        subjectTime = mInterface.getSubjectTimeMap();
-        subjectPbStatus = mInterface.getSubjectPbStatusMap();
-        subjectTime
-                .doOnSubscribe(disposables::add)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(timeResults());
-
-        subjectPbStatus
-                .doOnSubscribe(disposables::add)
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(pbStatus());
-
-        Observable<Integer>
-                fillingCollectionsObservable =
-                Observable.fromArray(operationsFillingArray)
-                        .flatMap(function -> Observable
-                                .fromCallable(callableTaskInterface.getFillingOperationsMaps(fillingMaps,
-                                        function, subjectTime, subjectPbStatus))
-                                .subscribeOn(scheduler))
-                        .observeOn(AndroidSchedulers.mainThread());
-
-        Observable<Integer>
-                operationsWithCollectionsObservable =
-                Observable.fromArray(operationsWithCollectionsArray)
-                        .flatMap(consumer -> Observable
-                                .fromCallable(callableTaskInterface.getOperationsMaps(fillingMaps, consumer,
-                                        operationsWithMapsList, subjectTime, subjectPbStatus))
-                                .subscribeOn(scheduler))
-                        .observeOn(AndroidSchedulers.mainThread());
-
-        Observable<Integer>
-                mainObservable =
-                Observable.concat(fillingCollectionsObservable, operationsWithCollectionsObservable);
-        disposables.add(mainObservable.subscribe());
+    public MapsPresenter(){
+        initExecutor();
     }
 
+    public void start(int numElementsMap) {
+        disposables.clear();
+        mainObservable=createMainObservable(numElementsMap);
+        disposables.add(mainObservable.subscribe());
+    }
 
     public Observer<ResultClass.TimeResult> timeResults() {
         return new Observer<ResultClass.TimeResult>() {
@@ -164,6 +90,10 @@ public class MapsPresenter extends MvpPresenter<MapView> implements InjectSubjec
             public void onNext(ResultClass.@NonNull PbStatus pbStatus) {
                 pbStatusResArray[pbStatus.getIndex()] = pbStatus.getStatus();
                 getViewState().showPbStatus(pbStatusResArray);
+                if (!Arrays.asList(pbStatusResArray).contains(null)&&
+                        !Arrays.asList(pbStatusResArray).contains(true)){
+                    subjectPbStatus.onComplete();
+                }
             }
 
             @Override
@@ -176,11 +106,96 @@ public class MapsPresenter extends MvpPresenter<MapView> implements InjectSubjec
         };
     }
 
+
+    public Observable<Integer> createMainObservable (int numElementsMap){
+
+        InjectCallableTaskInterface callableTaskInterface =
+                EntryPoints.get(this, InjectCallableTaskInterface.class);
+
+        InjectOperationsInterface operationsInterface =
+                EntryPoints.get(this, InjectOperationsInterface.class);
+
+        FillingMaps fillingMaps = operationsInterface.getFillingMaps();
+        OperationsWithHashMap operationsWithHashMap =
+                operationsInterface.getOperationsWithHashMap();
+        OperationsWithTreeMap operationsWithTreeMap =
+                operationsInterface.getOperationsWithTreeMap();
+        fillingMaps.createFillingMapsOperationsList(numElementsMap);
+
+        ArrayList<Consumer<?>> operationsWithMapsList = new ArrayList<>();
+        operationsWithMapsList.addAll(operationsWithHashMap.getOperationsWithHashMap());
+        operationsWithMapsList.addAll(operationsWithTreeMap.getOperationsWithTreeMap());
+
+        Consumer<?>[] operationsWithCollectionsArray = new Consumer[6];
+        for (Consumer<?> consumer : operationsWithMapsList) {
+            operationsWithCollectionsArray[operationsWithMapsList.indexOf(consumer)] = consumer;
+        }
+
+        Function[] operationsFillingArray = new Function[2];
+        for (Function function : fillingMaps.getOperationsFillingList()) {
+            operationsFillingArray[fillingMaps.getOperationsFillingList().indexOf(function)] =
+                    function;
+        }
+
+        InjectSubjectInterface mInterface = EntryPoints.get(this, InjectSubjectInterface.class);
+        subjectTime = mInterface.getSubjectTimeMap();
+        subjectPbStatus = mInterface.getSubjectPbStatusMap();
+        subjectTime
+                .doOnSubscribe(disposables::add)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(timeResults());
+
+        subjectPbStatus
+                .doOnSubscribe(disposables::add)
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(pbStatus());
+
+        Observable<Integer>
+                fillingCollectionsObservable =
+                Observable.fromArray(operationsFillingArray)
+                        .flatMap(function -> Observable
+                                .fromCallable(callableTaskInterface.getFillingOperationsMaps(fillingMaps,
+                                        function, subjectTime, subjectPbStatus))
+                                .subscribeOn(scheduler))
+                        .observeOn(AndroidSchedulers.mainThread());
+
+        Observable<Integer>
+                operationsWithCollectionsObservable =
+                Observable.fromArray(operationsWithCollectionsArray)
+                        .flatMap(consumer -> Observable
+                                .fromCallable(callableTaskInterface.getOperationsMaps(fillingMaps,
+                                        consumer,operationsWithMapsList, subjectTime, subjectPbStatus))
+                                .subscribeOn(scheduler))
+                        .observeOn(AndroidSchedulers.mainThread());
+
+        mainObservable =
+                Observable.concat(fillingCollectionsObservable, operationsWithCollectionsObservable);
+        return mainObservable;
+    }
+
     @Override
     public void onDestroy() {
         super.onDestroy();
         executor.shutdown();
         disposables.clear();
+    }
+    private void initExecutor() {
+        InjectSchedulerInterface schedulerInterface =
+                EntryPoints.get(this, InjectSchedulerInterface.class);
+        executor = schedulerInterface.createExecutor();
+        scheduler = schedulerInterface.createScheduler(executor);
+    }
+    public String[] getTimeResArray() {
+        return timeResArray;
+    }
+    public Boolean[] getPbStatusResArray() {
+        return pbStatusResArray;
+    }
+    public Subject<ResultClass.TimeResult> getSubjectTime(){
+        return subjectTime;
+    }
+    public Subject<ResultClass.PbStatus> getSubjectPbStatus(){
+        return subjectPbStatus;
     }
 
 }
